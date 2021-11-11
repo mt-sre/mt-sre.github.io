@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "MT-SRE Docs"
+title = "Managed Tenants SRE Docs"
 
 enableRobotsTXT = true
 
@@ -70,7 +70,7 @@ id = "UA-00000000-0"
 
 [languages]
 [languages.en]
-title = "Goldydocs"
+title = "Managed Tenants SRE"
 description = "Documentation for Managed Tenants SRE at Red Hat"
 languageName ="English"
 # Weight used for sorting.
