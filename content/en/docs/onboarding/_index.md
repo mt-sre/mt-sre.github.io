@@ -1,9 +1,9 @@
 ---
-title: "Overview"
-linkTitle: "Overview"
-weight: 1
+title: Onboarding
+linkTitle: Onboarding
+weight: 10
 description: >
-  Here's where your user finds out if your project is for them.
+  Onboarding a new layered product and getting SRE support.
 ---
 
 {{% pageinfo %}}
@@ -35,4 +35,3 @@ Give your users next steps from the Overview. For example:
 
 * [Getting Started](/getting-started/): Get started with $project
 * [Examples](/examples/): Check out some example code!
-

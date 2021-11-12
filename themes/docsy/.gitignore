@@ -10,3 +10,4 @@ node_modules/
 # IDE files
 .idea
 .vscode
+.hugo_build.lock

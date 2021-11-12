@@ -4,3 +4,12 @@ Add styles or override variables from the theme here.
 
 */
 
+@import url("https://fonts.googleapis.com/css?family=Red+Hat+Display:700,900&display=swap");
+
+$enable-gradients: false;
+$enable-rounded: false;
+
+$light: #f0f0f0;
+$dark: #151515;
+$primary: #e00;
+$td-sidebar-bg-color: rgba($dark, 0.03);
