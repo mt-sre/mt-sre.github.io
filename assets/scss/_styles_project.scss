@@ -1,0 +1,29 @@
+.navbar-logo {
+  margin-right: 10px;
+}
+
+.navbar-brand {
+  font-family: "Red Hat Display";
+  display: flex;
+  align-items: flex-end;
+}
+
+.td-navbar {
+  background: $dark;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Red Hat Display";
+}
+
+footer {
+  min-height: auto !important;
+}
+
+.cover-section p{
+  max-width: 700px;
+}
+
+body.td-home {
+  background-color: $dark;
+}
