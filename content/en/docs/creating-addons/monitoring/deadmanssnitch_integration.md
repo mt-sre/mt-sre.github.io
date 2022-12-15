@@ -1,5 +1,6 @@
 ---
 title: "Dead Man's Snitch Operator Integration"
+linkTitle: "Dead Man's Snitch"
 date: 2022-12-15T00:53:51+01:00
 ---
 
@@ -18,7 +19,9 @@ This field allows you to provide the required Dead Man's Snitch integration conf
 resource is then created and applied to Hive alongside the Add-On [SelectorSyncSet (SSS)](https://github.com/openshift/hive/blob/master/docs/syncset.md#selectorsyncset-object-definition).
 
 
-### The default DDS configurations which will be created if you specify the bare minimum fields under 'deadmanssnitch' field in addon metadata
+### DeadmansSnitchIntegration Resource
+The default DMS configurations which will be created if you specify the bare minimum fields under 'deadmanssnitch' 
+field in addon metadata:
 
 ```yaml
 - apiVersion: deadmanssnitch.managed.openshift.io/v1alpha1
@@ -93,7 +96,10 @@ deadmanssnitch:
     namespace: redhat-rhoami-operator
 ```
 
-### Your add-on will need to pick up the generated secret in cluster and inject it into your alertmanager config. Example of in-cluster created secret:
+### Generated Secret 
+A secrete will be generated (by default in the same namespace as your addon) with the `SNITCH_URL`. 
+Your add-on will need to pick up the generated secret in cluster and inject it into your alertmanager config. 
+Example of in-cluster created secret:
 
 ```yaml
 kind: Secret
@@ -107,8 +113,8 @@ data:
 type: Opaque
 ```
 
-### Your alertmanager will need a constantly firing alert that is routed to DMS:
-
+### Alert
+Your alertmanager will need a constantly firing alert that is routed to DMS:
 Example of an alert that always fires:
 
 ```yaml
@@ -124,6 +130,7 @@ Example of an alert that always fires:
         summary: Alerting DeadManSnitch
 ```
 
+## Route
 Example of a route that forwards the firing-alert to DMS:
 
 ```yaml
@@ -133,6 +140,7 @@ Example of a route that forwards the firing-alert to DMS:
   repeat_interval: 5m
 ```
 
+## Receiver
 Example receiver for DMS:
 
 ```yaml
@@ -144,11 +152,11 @@ Example receiver for DMS:
 
 {{% alert %}}
 Before going live with the SRES SRE team, they will need to manually point the `tags: ["my-addon-production"]`
-in the SD DMS account to their pagerduty service.
+in the Service Delivery DMS account to their pagerduty service.
 {{% /alert %}}
 
 
-Please log a JIRA with your assigned SRE team to have this completed at least 1 week before going live with the SRE team.
+Please log a JIRA with your assigned SRE team to have this completed at least one week before going live with the SRE team.
 
 
 
@@ -156,3 +164,4 @@ Please log a JIRA with your assigned SRE team to have this completed at least 1 
 - [RHOAM addon: DMS CR template](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/deadmanssnitch.yaml.j2)
 - [RHOAM addon: extraResources](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/addon.yaml#L40) field in `addon.yaml`
 - [RHODS addon: alertmanager configuration](https://github.com/red-hat-data-services/odh-deployer/blob/cb48c55725fd32fdc89a5ff29517b3f4cc0d1f54/monitoring/prometheus/prometheus.yaml)
+// TODO: This 
