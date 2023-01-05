@@ -15,7 +15,7 @@ report results.
 To ensure certain things such as validating that the addon can be easily and successfully installed on a customer’s cluster, 
 we have prow jobs setup which run e2e tests (one test suite per addon) every 12 hours.
 If the e2e tests corresponding to any addon fail, then automated alerts/notifications are sent to the addon team.
-Every addon's e2e tests are packaged in an image called “testHarness”, which is built and pushed to [quay.io](quay.io) 
+Every addon's e2e tests are packaged in an image called “testHarness”, which is built and pushed to [quay.io](https://quay.io) 
 by the team maintaining the addon.
 Once the "testHarness" image is built and pushed, the team must register their addon to testHarness image’s e2e tests 
 by making a PR against this file as it holds the configuration about all the registered e2e tests. For example, this section. ??

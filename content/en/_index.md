@@ -25,27 +25,16 @@ weight: 10
   <div
     class="mt-5 animate__animated animate__slideInLeft animate__fast animate__delay-1s">
     <h1>Developers</h1>
-    <p> Automation Tooling, CI/CD, SDKs, reference and example projects,
-      guides and API documentation for developers working on managed
-      services and their dependencies. </p>
-    <a class="btn btn-lg btn-primary mr-3 mb-4"
-      href="{{< relref "/docs/developer-hub" >}}">Get Started</a>
-    <a class="btn btn-lg btn-outline-light mr-3 mb-4"
-      href="{{< relref "/docs/developer-hub/addon-operator" >}}">Addon
-      Operator</a>
-    <a class="btn btn-lg btn-outline-light mr-3 mb-4"
-      href="https://sdk.operatorframework.io/docs/">Operator SDK</a>
-    <a class="btn btn-lg btn-outline-light mr-3 mb-4"
-      href="https://source.redhat.com/groups/public/openshiftplatformsre">Platform
-      SRE</a>
+    <p>
+      Automation Tooling, CI/CD, SDKs, reference and example projects, guides and API documentation for developers working on managed services and their dependencies.
+    </p>
+    <a class="btn btn-lg btn-outline-light mr-3 mb-4" href="https://sdk.operatorframework.io/docs/">Operator SDK</a>
+    <a class="btn btn-lg btn-outline-light mr-3 mb-4" href="https://source.redhat.com/groups/public/openshiftplatformsre">Platform SRE</a>
   </div>
-  <div
-    class="mt-5 animate__animated animate__slideInLeft animate__fast animate__delay-2s">
+
+  <div class="mt-5 animate__animated animate__slideInLeft animate__fast animate__delay-2s">
     <h1>Vendor Integrators</h1>
-    <p>Integrating and offering Red Hat external services within managed
-      OpenShift.</p>
-    <a class="btn btn-lg btn-primary mr-3 mb-4"
-      hrsef="{{< relref "/docs/integrator-hub" >}}">Get Started</a>
+    <p>Integrating and offering Red Hat external services within managed OpenShift.</p>
   </div>
 </div>
 {{< /blocks/section >}}
