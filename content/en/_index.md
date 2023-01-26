@@ -1,13 +1,14 @@
-
 ---
 title: "Managed Tenants SRE"
 linkTitle: "MT-SRE"
+weight: 10
 ---
 
 {{< blocks/section color="dark" >}}
+
 <div class="cover-section">
   <h1 class="display-1">Red Hat Layered Products!</h1>
-	<p class="lead">Managing managed services on managed OpenShift!</p>
+ <p class="lead">Managing managed services on managed OpenShift!</p>
 
   <div class="mt-5 animate__animated animate__slideInLeft animate__fast">
     <h1>Product Managers / Team Leads</h1>
