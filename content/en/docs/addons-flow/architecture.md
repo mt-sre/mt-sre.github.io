@@ -47,6 +47,7 @@ in Hive. The `SyncSet` object references the cluster in which the addon was just
 just appended to the clusterDeploymentRefs list?
 
 ![Data Flows](../images/architecture_install_flow.png)
+[excalidraw](https://excalidraw.com/#room=71d4b0273d4404dbbebf,Pk5KFYj9fFvXSvObY6juCA)
 
 From there, OLM will take over, installing the Operator in the OpenShift
 cluster. While OLM is installing the Operator, OCM will keep polling the
