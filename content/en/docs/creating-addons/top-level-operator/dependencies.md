@@ -9,8 +9,7 @@ as signed-off by the Managed Tenants SRE Team.
 ## Dependencies Specification
 
 * Addons must specify dependencies using the OLM dependencies feature,
-  documented
-  [here](https://docs.openshift.com/container-platform/4.7/operators/understanding/olm/olm-understanding-dependency-resolution.html)
+  documented [here](https://docs.openshift.com/container-platform/4.7/operators/understanding/olm/olm-understanding-dependency-resolution.html)
 * The dependencies must have the version pin-pointed. Ranges are not allowed.
 * The dependencies must come from a *Trusted Catalog*. See the
   [Trusted Catalogs](#trusted-catalogs) section for details.
@@ -45,4 +44,5 @@ implemented by CPaaS, or by the Managed Tenants SRE Team.
 
 There's a feature request to the OLM Team to allow specifying the
 CatalogSource used for the dependencies:
+
 * [OLM-2249](https://issues.redhat.com/browse/OLM-2249)

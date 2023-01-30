@@ -1,4 +1,7 @@
-# Managed Tenants SRE Interrupt Catcher
+---
+title: Interrupt Catcher
+linkTitle: IC
+---
 
 The Interrupt Catcher is the entry-point for any tenant to get help,
 ask questions and raise issues. It's our interface with our Tenants.
@@ -18,7 +21,7 @@ Each working day has 15 hours of IC "Follow The Sun" coverage:
 Work items generated outside that time-frame will be picked up
 in the next FTS shift.
 
-PagerDuty Schedule: https://redhat.pagerduty.com/schedules#PM3YCH1
+PagerDuty Schedule: <https://redhat.pagerduty.com/schedules#PM3YCH1>
 
 ## Response Time
 
@@ -44,18 +47,18 @@ PagerDuty Schedule: https://redhat.pagerduty.com/schedules#PM3YCH1
 ## Surfaces
 
 * Slack channels:
-    * `#sd-mt-sre-info`
-    * `#mt-cs-sre-teamchat`
-    * `#mt-cs-sre-teamhandover`
-    * `#forum-managed-tenants`
+  * `#sd-mt-sre-info`
+  * `#mt-cs-sre-teamchat`
+  * `#mt-cs-sre-teamhandover`
+  * `#forum-managed-tenants`
 * Mailing lists:
-    * managed-tenants@redhat.com
+  * managed-tenants@redhat.com
 * Git Repositories:
-    * https://gitlab.cee.redhat.com/service/managed-tenants-bundles
+  * <https://gitlab.cee.redhat.com/service/managed-tenants-bundles>
       (not automated)
-    * https://gitlab.cee.redhat.com/service/managed-tenants
+  * <https://gitlab.cee.redhat.com/service/managed-tenants>
       (tenants-related MRs, partially automated)
-    * https://gitlab.cee.redhat.com/service/managed-tenants-manifests
+  * <https://gitlab.cee.redhat.com/service/managed-tenants-manifests>
       (fully automated)
-    * https://gitlab.cee.redhat.com/service/managed-tenants-sops
+  * <https://gitlab.cee.redhat.com/service/managed-tenants-sops>
       (tenants-related MRs, partially automated)

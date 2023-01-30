@@ -3,20 +3,15 @@ title: "SLO Dashboards"
 date: 2022-12-15T00:53:51+01:00
 ---
 
-// TODO: This might go in a SLI/SLO directory 
-
 Development teams are requested to co-maintain, with the MT-SRE Team, SLO Dashboards for the Addons
-they develop. This document explains how to boostrap the dashboard creation and deployment.
-
-This document does not discuss the content of the dashboard, the topic will be approached in a
-follow-up documentation artifact. // TODO: WHERE???
+they develop. This document explains how to bootstrap the dashboard creation and deployment.
 
 ## First Dashboard
 
 * Fork/clone the [managed-tenants-slos repository](https://gitlab.cee.redhat.com/service/managed-tenants-slos).
 * Create the following directory structure:
 
-```
+```yaml
 ├── <addon-name>
 │   ├── dashboards
 │   │   └── <addon-name>-slo-dashboard.configmap.yaml
@@ -185,7 +180,7 @@ data:
 
 ## Dashboard Deployment
 
-Merging of the above merge request is a prerequisite for this step. 
+Merging of the above merge request is a prerequisite for this step.
 
 The dashboard deployment happens through app-interface, using saas-files.
 
@@ -194,18 +189,18 @@ The dashboard deployment happens through app-interface, using saas-files.
 
 Example Merge Request content to app-interface:
 
-https://gitlab.cee.redhat.com/service/app-interface/-/commit/9306800aabaca18cd034dfb3933a12d29506fa08
+<https://gitlab.cee.redhat.com/service/app-interface/-/commit/9306800aabaca18cd034dfb3933a12d29506fa08>
 
 * Ping `@mt-sre-ic` in the `#forum-managed-tenants` Slack channel for approval.
 * Merge Requests to app-interface are constantly reviewed/merged by AppSRE. After the MT-SRE approval,
   wait until the Merge Request is merged.
 
-# Accessing the Dashboards
+## Accessing the Dashboards
 
 Once the app-interface merge request is merged, you will see your ConfigMaps being deployed in
 the `#sd-mt-sre-info` Slack channel. For example:
 
-```
+```bash
 [app-sre-stage-01] ConfigMap odf-ms-cluster-status applied
 ...
 [app-sre-prod-01] ConfigMap odf-ms-cluster-status applied
@@ -213,14 +208,15 @@ the `#sd-mt-sre-info` Slack channel. For example:
 
 Once the dashboards are deployed, you can see them here:
 
-* STAGE: https://grafana.stage.devshift.net/dashboards/f/aGqy3WB7k/addons
-* PRODUCTION: https://grafana.app-sre.devshift.net/dashboards/f/sDiLLtgVz/addons
+* STAGE: <https://grafana.stage.devshift.net/dashboards/f/aGqy3WB7k/addons>
+* PRODUCTION: <https://grafana.app-sre.devshift.net/dashboards/f/sDiLLtgVz/addons>
 
-# Development Flow
+## Development Flow
 
 After all the configuration is in place:
 
 STAGE:
+
 * Dashboards on the STAGE Grafana instance should not be used by external audiences other than
   the people developing the dashboards.
 * Changes in the `managed-tenants-slos` repository can be merged by the development team with "/lgtm"
@@ -228,6 +224,7 @@ STAGE:
 * After merged, changes are automatically delivered to the STAGE grafana instance.
 
 PRODUCTION:
+
 * The dashboards on the PRODUCTION Grafana are pinpointed to a specific git commit from the managed-tenants-slos
   repository in the corresponding saas-file in app-interface.
 * After patching the git commit in the saas-file, owners of the saas-file can merge the promotion

@@ -3,8 +3,6 @@ title: "Addons Flow Architecture"
 date: 2022-12-15T00:53:51+01:00
 ---
 
-# Add-Ons Flow Architecture
-
 Add-Ons are Operators. As such, Add-Ons are installed using typical Operator
 objects, like `Subscription`, `OperatorGroup` and `CatalogSource`.
 
@@ -29,12 +27,12 @@ the corresponding bundles directories (`managed-tenants-bundles/addons/<addon_na
 The Managed Tenants CI is in charge of processing the input and deploying all
 the artifacts. This image shows the data flows:
 
-![Data Flows](../images/addon-syncset-installation.png)
+![Data Flows](/addon-syncset-installation.png)
 
 With that in place, OCM will present an "Add-Ons" tab, listing all the Add-Ons
 that your organization has quota for. Example:
 
-![Data Flows](../images/architecture_ocm_ui.png)
+![Data Flows](/architecture_ocm_ui.png)
 
 ## Installation
 
@@ -43,10 +41,7 @@ When you click "Install" in the OCM Web UI, under the hood, OCM creates a
 in Hive. The `SyncSet` object references the cluster in which the addon was just installed in the
 `clusterDeploymentRefs` field.
 
-// TODO: If there is already a SyncSet for an addon is a new one created or is the new cluster name
-just appended to the clusterDeploymentRefs list?
-
-![Data Flows](../images/architecture_install_flow.png)
+![Data Flows](/architecture_install_flow.png)
 [excalidraw](https://excalidraw.com/#room=71d4b0273d4404dbbebf,Pk5KFYj9fFvXSvObY6juCA)
 
 From there, OLM will take over, installing the Operator in the OpenShift
@@ -54,19 +49,20 @@ cluster. While OLM is installing the Operator, OCM will keep polling the
 telemetry  data reported by the cluster, waiting for the `csv_succeeded=1`
 metric from that Operator:
 
-![Data Flows](../images/architecture_telemetry_wait.png)
+![Data Flows](/architecture_telemetry_wait.png)
 
 At some point, when the Operator is fully installed, OCM will reflect that in
 the Web UI:
 
-![Data Flows](../images/architecture_telemetry_done.png)
+![Data Flows](/architecture_telemetry_done.png)
 
 ## Addon Status Lifecycle
 
-![Addon Status Lifecycle](../images/addon-status-ocm.png)
+![Addon Status Lifecycle](/addon-status-ocm.png)
 
 ## Deprecated SelectorSyncSet Installation
-![Data Flows](../images/architecture_data_flow.png)
+
+![Data Flows](/architecture_data_flow.png)
 When you click "Install" in the OCM Web UI, under the hood, OCM will apply
 a label to the corresponding `ClusterDeployment` object in Hive.
 

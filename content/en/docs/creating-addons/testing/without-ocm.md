@@ -1,4 +1,9 @@
-## Testing Addons on OCP
+---
+title: Testing With OCP (Without OCM)
+linkTitle: Testing With OCP (Without OCM)
+---
+
+## Testing Without OCM
 
 During the development process, it might be useful (and cheaper) to run your
 addon on an OCP cluster.

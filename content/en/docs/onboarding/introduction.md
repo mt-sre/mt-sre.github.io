@@ -1,22 +1,11 @@
 ---
 title: Introduction
-weight: 100
+weight: 10
 images: []
 toc: true
 ---
 
-## ROMS
+The ROMS article on [source](https://source.redhat.com/communities/communities_of_practice/cross_cutting_co/cloud_services_cop/wiki/draft_how_to_get_started_with_roms_repeatable_onboarding_for_managed_services)
+has a great introduction to managed services.
 
-## SRE Team Assignment
-
-## Onboarding Checklist
-
-https://docs.google.com/spreadsheets/d/1qgK3_Yt3wRTyCqxVICrobDNmwMwjoSDPrQvy6vbTPYI/edit#gid=1141875805
-
-https://docs.google.com/document/d/1c0drua0YciULkEuYsTCAM1E_JJK-b2TgjTeFnjxh_6c/edit#heading=h.bupciudrwmna
-
-## Soak Test
-
-## Pager Handover
-
-## Addon Sunset
+There are multiple steps to onboard a managed service. First you have to complete ROMS

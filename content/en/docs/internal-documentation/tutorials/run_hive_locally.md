@@ -1,4 +1,7 @@
-# Hive Local Environment
+---
+title: Run Hive Locally
+linkTitle: Run Hive Locally
+---
 
 This guide describes how to deploy a Hive environment in your local machine
 using [kind](https://kind.sigs.k8s.io/).
@@ -142,9 +145,11 @@ certificates for the hiveadmission webhooks:
 
 If the hive cluster is using node image `kindest/node:v1.24.0` or later, you will
 have to additionally run:
+
 ```bash
 ~/hive$ ./hack/create-service-account-secrets.sh
 ```
+
 because starting in Kubernetes 1.24.0, secrets are no longer automatically generated
 for service accounts.
 
@@ -227,13 +232,16 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 Before we install OLM, we have to edit the install scripts to use `cluster1`. Go into `scripts/build_local.sh`
 and replace
+
 ```bash
   if [[ ${#CLUSTERS[@]} == 1 ]]; then
     KIND_FLAGS="--name ${CLUSTERS[0]}"
     echo 'Use cluster ${CLUSTERS[0]}'
   fi
 ```
+
 with
+
 ```bash
   KIND_FLAGS="--name cluster1"
 ```
