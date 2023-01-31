@@ -6,9 +6,11 @@ The Managed Tenants SRE Team lasts 3 full weeks.
 
 ## Backlog Refinement
 
-Every 3 weeks. 1h (max). Before the sprint ends; planned around half a week before the next sprint.
+Every 3 weeks. 1h (max). Before the sprint ends; planned around half a week
+before the next sprint.
 
-* Scrum Team comes together to refine issues in our backlog and to ensure that important issues are actionable for the next sprint.
+* Scrum Team comes together to refine issues in our backlog and to ensure that
+  important issues are actionable for the next sprint.
 * Product Owner owns the backlog and can communicate their needs and wishes to the Dev Team
 * This includes:
   * ensuring that the Definition of Ready is met for most of our issues
@@ -17,7 +19,8 @@ Every 3 weeks. 1h (max). Before the sprint ends; planned around half a week befo
 
 ## Sprint Retro
 
-Every 3 weeks. 30-minute (max). Before the sprint ends. Right now this happens right before the planning meeting for the next sprint:
+Every 3 weeks. 30-minute (max). Before the sprint ends. Right now this
+happens right before the planning meeting for the next sprint:
 
 * Scrum Team comes together to fine tune processes and other stuff that they deem important.
 * The goals of continuous Retro meetings are:

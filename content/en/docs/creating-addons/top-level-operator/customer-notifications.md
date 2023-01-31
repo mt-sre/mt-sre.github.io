@@ -14,5 +14,6 @@ for more information) where email addresses can be provided:
 * `addonNotifications`: This is a list of additional email addresses of
   employees who would like to receive notifications about a service.
 
-There is also a mailing list that receives notifications for all services managed by Service Delivery.
-Subscribe to the sd-notifications mailing list [here](https://post-office.corp.redhat.com/mailman/listinfo/sd-notifications).
+There is also a mailing list that receives notifications for all services managed
+by Service Delivery. Subscribe to the sd-notifications mailing list
+[here](https://post-office.corp.redhat.com/mailman/listinfo/sd-notifications).

@@ -7,9 +7,10 @@ toc: true
 
 ## Transition Overview
 
-This stage focuses on the viability of the service. If, after an agreed amount of time of being in production
-(defaults to a 4-week rolling window), the service meets its SLOs then it will be considered viable by SRE and the
-pager will be transferred to the Addon SRE team.
+This stage focuses on the viability of the service. If, after an agreed amount of time of
+being in production(defaults to a 4-week rolling window), the service meets its SLOs then
+it will be considered viable by SRE and the pager will be transferred to the Addon SRE
+team.
 
 ## Viability Steps
 

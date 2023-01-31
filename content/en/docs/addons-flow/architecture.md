@@ -12,8 +12,11 @@ To get those objects into the OpenShift clusters, we rely on
 
 ## Deployment
 
-Our input is the Add-On metadata file (`managed-tenants/addons/<addon_name>/metadata/<stage|prod>/addon.yaml`) and
-the corresponding bundles directories (`managed-tenants-bundles/addons/<addon_name>/`). With that in place, we will:
+Our input is the Add-On metadata file
+(`managed-tenants/addons/<addon_name>/metadata/<stage|prod>/addon.yaml`)
+and the corresponding bundles directories
+(`managed-tenants-bundles/addons/<addon_name>/`).
+With that in place, we will:
 
 * Build the Operator catalog container image.
   * Push the catalog image to our organization repository in Quay.io.
@@ -38,8 +41,8 @@ that your organization has quota for. Example:
 
 When you click "Install" in the OCM Web UI, under the hood, OCM creates a
 `SyncSet` [object](https://github.com/openshift/hive/blob/master/docs/syncset.md#syncset-object-definition)
-in Hive. The `SyncSet` object references the cluster in which the addon was just installed in the
-`clusterDeploymentRefs` field.
+in Hive. The `SyncSet` object references the cluster in which the addon was just
+installed in the `clusterDeploymentRefs` field.
 
 ![Data Flows](/architecture_install_flow.png)
 [excalidraw](https://excalidraw.com/#room=71d4b0273d4404dbbebf,Pk5KFYj9fFvXSvObY6juCA)

@@ -5,7 +5,8 @@ description: >
   How to request a SKU for your addon.
 ---
 
-**NOTE** MT-SRE do not influence SKU creation/priorities. You must work with SDB directly for this.
+**NOTE** MT-SRE do not influence SKU creation/priorities.
+You must work with SDB directly for this.
 
 ## Requesting a SKU
 
@@ -26,12 +27,13 @@ To request a SKU, please complete the following steps:
 
 ## Requesting SKU Attributes Changes
 
-From time to time you may want to update some SKU fields like supported cloud providers, quota cost, product support, etc.
-To do this:
+From time to time you may want to update some SKU fields like supported cloud providers,
+quota cost, product support, etc. To do this:
 
 * Create a JIRA Request at [Service Dev Team B](https://issues.redhat.com/projects/SDB/)
 * Ping the ticket in #service-development-b Slack channel (@sd-b-team is the handle)
-* This requires an update to be committed in-code in AMS, then deployed to stage and eventually prod (allow up to 7 working days).
+* This requires an update to be committed in-code in AMS, then deployed to stage and
+  eventually prod (allow up to 7 working days).
 
 ## Current Status
 

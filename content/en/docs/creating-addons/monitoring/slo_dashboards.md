@@ -3,8 +3,9 @@ title: "SLO Dashboards"
 date: 2022-12-15T00:53:51+01:00
 ---
 
-Development teams are requested to co-maintain, with the MT-SRE Team, SLO Dashboards for the Addons
-they develop. This document explains how to bootstrap the dashboard creation and deployment.
+Development teams are requested to co-maintain, with the MT-SRE Team, SLO
+Dashboards for the Addons they develop. This document explains how to
+bootstrap the dashboard creation and deployment.
 
 ## First Dashboard
 
@@ -192,13 +193,13 @@ Example Merge Request content to app-interface:
 <https://gitlab.cee.redhat.com/service/app-interface/-/commit/9306800aabaca18cd034dfb3933a12d29506fa08>
 
 * Ping `@mt-sre-ic` in the `#forum-managed-tenants` Slack channel for approval.
-* Merge Requests to app-interface are constantly reviewed/merged by AppSRE. After the MT-SRE approval,
-  wait until the Merge Request is merged.
+* Merge Requests to app-interface are constantly reviewed/merged by AppSRE.
+  After the MT-SRE approval, wait until the Merge Request is merged.
 
 ## Accessing the Dashboards
 
-Once the app-interface merge request is merged, you will see your ConfigMaps being deployed in
-the `#sd-mt-sre-info` Slack channel. For example:
+Once the app-interface merge request is merged, you will see your ConfigMaps
+being deployed in the `#sd-mt-sre-info` Slack channel. For example:
 
 ```bash
 [app-sre-stage-01] ConfigMap odf-ms-cluster-status applied
@@ -217,15 +218,16 @@ After all the configuration is in place:
 
 STAGE:
 
-* Dashboards on the STAGE Grafana instance should not be used by external audiences other than
-  the people developing the dashboards.
-* Changes in the `managed-tenants-slos` repository can be merged by the development team with "/lgtm"
-  comments from those in the OWNERS file.
+* Dashboards on the STAGE Grafana instance should not be used by
+  external audiences other than the people developing the dashboards.
+* Changes in the `managed-tenants-slos` repository can be merged by the
+  development team with "/lgtm" comments from those in the OWNERS file.
 * After merged, changes are automatically delivered to the STAGE grafana instance.
 
 PRODUCTION:
 
-* The dashboards on the PRODUCTION Grafana are pinpointed to a specific git commit from the managed-tenants-slos
-  repository in the corresponding saas-file in app-interface.
+* The dashboards on the PRODUCTION Grafana are pinpointed to a specific git
+  commit from the managed-tenants-slos repository in the corresponding
+  saas-file in app-interface.
 * After patching the git commit in the saas-file, owners of the saas-file can merge the promotion
   with a "/lgtm" comment in the app-interface Merge Request.

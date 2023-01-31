@@ -6,24 +6,28 @@ date: 2022-12-15T00:53:51+01:00
 
 ## Overview
 
-[Dead Man's Snitch (DMS)](https://deadmanssnitch.com/) is essentially a constantly firing prometheus alert and an external receiver
-(called a snitch) that will alert should the monitoring stack go down and stop sending alerts.
-The generation of "snitch" urls is dynamic on cluster/add-on installed.
-It's done via the [DMS operator](https://github.com/openshift/deadmanssnitch-operator),
+[Dead Man's Snitch (DMS)](https://deadmanssnitch.com/) is essentially a constantly firing
+prometheus alert and an external receiver(called a snitch) that will alert should the
+monitoring stack go down and stop sending alerts. The generation of "snitch" urls is
+dynamic on cluster/add-on installed. It's done via the
+[DMS operator](https://github.com/openshift/deadmanssnitch-operator),
 which runs on hive and is owned by SREP.
 
 ## Usage
 
-The Add-On metadata file (`addon.yaml`) allows you to provide a `deadmanssnitch` field (see `deadmansnitch` field in
-the Add-On metadata file [schema documentation](https://github.com/mt-sre/managed-tenants-cli/blob/main/docs/tenants/zz_metadata_schema_generated.md)
+The Add-On metadata file (`addon.yaml`) allows you to provide
+a `deadmanssnitch` field (see `deadmansnitch` field in
+the Add-On metadata file
+[schema documentation](https://github.com/mt-sre/managed-tenants-cli/blob/main/docs/tenants/zz_metadata_schema_generated.md)
 for more information).
-This field allows you to provide the required Dead Man's Snitch integration configuration. A `DeadmansSnitchIntegration`
-resource is then created and applied to Hive alongside the Add-On [SelectorSyncSet (SSS)](https://github.com/openshift/hive/blob/master/docs/syncset.md#selectorsyncset-object-definition).
+This field allows you to provide the required Dead Man's Snitch integration configuration.
+A `DeadmansSnitchIntegration`resource is then created and applied to Hive alongside the Add-On
+[SelectorSyncSet (SSS)](https://github.com/openshift/hive/blob/master/docs/syncset.md#selectorsyncset-object-definition).
 
 ### DeadmansSnitchIntegration Resource
 
-The default DMS configurations which will be created if you specify the bare minimum fields under 'deadmanssnitch'
-field in addon metadata:
+The default DMS configurations which will be created if you specify the bare minimum
+fields under 'deadmanssnitch' field in addon metadata:
 
 ```yaml
 - apiVersion: deadmanssnitch.managed.openshift.io/v1alpha1
@@ -48,8 +52,10 @@ field in addon metadata:
     tags: {{ADDON.metadata['deadmanssnitch']['tags']}} ## Required
 
     targetSecretRef:
-      name: {{ADDON.metadata['id']}}-deadmanssnitch ## can be overridden by .deadmanssnitch.targetSecretRef.name field in addon metadata
-      namespace: {{ADDON.metadata['targetNamespace']}} ## can be overridden by .deadmanssnitch.targetSecretRef.namespace field in addon metadata
+      ## can be overridden by .deadmanssnitch.targetSecretRef.name field in addon metadata
+      name: {{ADDON.metadata['id']}}-deadmanssnitch
+      ## can be overridden by .deadmanssnitch.targetSecretRef.namespace field in addon metadata
+      namespace: {{ADDON.metadata['targetNamespace']}}
 ```
 
 ### Examples of `deadmanssnitch` field in `addon.yaml`
@@ -101,8 +107,8 @@ deadmanssnitch:
 ### Generated Secret
 
 A secrete will be generated (by default in the same namespace as your addon) with the `SNITCH_URL`.
-Your add-on will need to pick up the generated secret in cluster and inject it into your alertmanager config.
-Example of in-cluster created secret:
+Your add-on will need to pick up the generated secret in cluster and inject it into your
+alertmanager config. Example of in-cluster created secret:
 
 ```yaml
 kind: Secret
@@ -161,10 +167,12 @@ Before going live with the SRES SRE team, they will need to manually point the `
 in the Service Delivery DMS account to their pagerduty service.
 {{% /alert %}}
 
-Please log a JIRA with your assigned SRE team to have this completed at least one week before going live with the SRE team.
+Please log a JIRA with your assigned SRE team to have this completed at least one week
+before going live with the SRE team.
 
 ### Current Example
 
 - [RHOAM addon: DMS CR template](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/deadmanssnitch.yaml.j2)
-- [RHOAM addon: extraResources](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/addon.yaml#L40) field in `addon.yaml`
+- [RHOAM addon: extraResources](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/addon.yaml#L40)
+  field in `addon.yaml`
 - [RHODS addon: alertmanager configuration](https://github.com/red-hat-data-services/odh-deployer/blob/cb48c55725fd32fdc89a5ff29517b3f4cc0d1f54/monitoring/prometheus/prometheus.yaml)
