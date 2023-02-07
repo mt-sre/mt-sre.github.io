@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Getting Access</title><link>/docs/internal-documentation/access/</link><description>Recent content in Getting Access on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/internal-documentation/access/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Getting Backplane Access</title><link>/docs/internal-documentation/access/backplane-access/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/access/backplane-access/</guid><description>
+&lt;h2 id="backplane">Backplane&lt;/h2>
+&lt;p>Backplane is the system used to provide access to the fleet of Openshift clusters. It
+creates ssh tunnels and modifies your local &lt;code>~/.kube/config&lt;/code>.&lt;/p>
+&lt;h3 id="getting-access">Getting access&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://github.com/openshift-online/ocm-cli#installation">Install ocm CLI&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://source.redhat.com/groups/public/openshiftplatformsre/wiki/backplane_user_documentation">Follow the instructions here&lt;/a>&lt;/li>
+&lt;li>Make sure your user is part of the
+&lt;a href="https://rover.redhat.com/groups/group/sd-mtsre">&lt;code>sd-mtsre&lt;/code> Rover group&lt;/a>.&lt;/li>
+&lt;li>Wait for &lt;code>https://gitlab.cee.redhat.com/service/authorizedkeys-builder&lt;/code>
+to sync your ssh key onto the fleet of Openshift clusters&lt;/li>
+&lt;li>&lt;a href="https://gitlab.cee.redhat.com/service/backplane-cli#install">Install backplane CLI&lt;/a>
+or use the &lt;a href="https://gitlab.consulting.redhat.com/red-hat-arch-linux-users/backplane-cli">PKGBUILD&lt;/a>.&lt;/li>
+&lt;/ol></description></item><item><title>Docs: Getting OCM API Access</title><link>/docs/internal-documentation/access/ocm-api-access/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/access/ocm-api-access/</guid><description/></item></channel></rss>

@@ -1,0 +1,288 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Tutorials</title><link>/docs/internal-documentation/tutorials/</link><description>Recent content in Tutorials on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/internal-documentation/tutorials/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Run Hive Locally</title><link>/docs/internal-documentation/tutorials/run_hive_locally/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/tutorials/run_hive_locally/</guid><description>
+&lt;p>This guide describes how to deploy a Hive environment in your local machine
+using &lt;a href="https://kind.sigs.k8s.io/">kind&lt;/a>.&lt;/p>
+&lt;p>For the managed clusters, this guide covers both
+&lt;a href="https://kind.sigs.k8s.io/">kind&lt;/a> clusters and
+&lt;a href="https://developers.redhat.com/products/codeready-containers/overview">CRC&lt;/a>
+clusters.&lt;/p>
+&lt;h2 id="preparation">Preparation&lt;/h2>
+&lt;p>Setup your &lt;code>GOPATH&lt;/code>. Add to your &lt;code>~/.bashrc&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">GOPATH&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#000">$HOME&lt;/span>/go
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">PATH&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#4e9a06">${&lt;/span>&lt;span style="color:#000">PATH&lt;/span>&lt;span style="color:#4e9a06">}&lt;/span>:&lt;span style="color:#4e9a06">${&lt;/span>&lt;span style="color:#000">GOPATH&lt;/span>&lt;span style="color:#4e9a06">}&lt;/span>/bin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Install &lt;code>kind&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ chmod +x ./kind
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ mv ./kind ~/.local/bin/kind
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>This guide was created using kind version: &lt;code>kind v0.14.0 go1.18.2 linux/amd64&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;p>Install the dependencies:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#000">GO111MODULE&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>on go get sigs.k8s.io/kustomize/kustomize/v3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ go get github.com/cloudflare/cfssl/cmd/cfssl
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ go get github.com/cloudflare/cfssl/cmd/cfssljson
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ go get -u github.com/openshift/imagebuilder/cmd/imagebuilder
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Clone OLM and checkout the version:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ git clone git@github.com:operator-framework/operator-lifecycle-manager.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> operator-lifecycle-manager
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/operator-lifecycle-manager$ git checkout -b v0.21.2 v0.21.2
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/operator-lifecycle-manager$ &lt;span style="color:#204a87">cd&lt;/span> ..
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Clone Hive and checkout the version:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ git clone git@github.com:openshift/hive.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$ git checkout 56adaaacf5f8075e3ad0896dac35243a863ec07b
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Edit the &lt;code>hack/create-kind-cluster.sh&lt;/code>, adding the apiServerAddress pointing
+to your local &lt;code>docker0&lt;/code> bridge IP. This is needed so the Hive cluster, which
+runs inside a docker container, can reach the managed cluster, running inside
+another docker container:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#204a87;font-weight:bold">kind&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">Cluster&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">apiVersion&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">kind.x-k8s.io/v1alpha4&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">networking&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">apiServerAddress&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#4e9a06">&amp;#34;172.17.0.1&amp;#34;&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#8f5902;font-style:italic"># docker0 bridge IP&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">containerdConfigPatches&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>- &lt;span style="color:#000;font-weight:bold">|-&lt;/span>&lt;span style="color:#8f5902;font-style:italic">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#8f5902;font-style:italic"> [plugins.&amp;#34;io.containerd.grpc.v1.cri&amp;#34;.registry.mirrors.&amp;#34;localhost:${reg_port}&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#8f5902;font-style:italic"> endpoint = [&amp;#34;http://${reg_name}:${reg_port}&amp;#34;]&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="hive">Hive&lt;/h2>
+&lt;p>Export the Hive kubeconfig filename (it will be created later):&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/hive.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Enter the &lt;code>hive&lt;/code> directory:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> hive
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Create the Hive cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ ./hack/create-kind-cluster.sh hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Creating cluster &lt;span style="color:#4e9a06">&amp;#34;hive&amp;#34;&lt;/span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Creating cluster &lt;span style="color:#4e9a06">&amp;#34;hive&amp;#34;&lt;/span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Ensuring node image &lt;span style="color:#ce5c00;font-weight:bold">(&lt;/span>kindest/node:v1.24.0&lt;span style="color:#ce5c00;font-weight:bold">)&lt;/span> 🖼
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Preparing nodes 📦
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Writing configuration 📜
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Starting control-plane 🕹️
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Installing CNI 🔌
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Installing StorageClass 💾
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set kubectl context to &lt;span style="color:#4e9a06">&amp;#34;kind-hive&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You can now use your cluster with:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl cluster-info --context kind-hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Not sure what to &lt;span style="color:#204a87;font-weight:bold">do&lt;/span> next? 😅 Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>/tmp/hive.conf&lt;/code> file is created now. Checking the installation:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ docker ps
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>901f215229a4 kindest/node:v1.24.0 &lt;span style="color:#4e9a06">&amp;#34;/usr/local/bin/entr…&amp;#34;&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">2&lt;/span> minutes ago Up &lt;span style="color:#0000cf;font-weight:bold">2&lt;/span> minutes 172.17.0.1:41299-&amp;gt;6443/tcp hive-control-plane
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>0d4bf61da0a3 registry:2 &lt;span style="color:#4e9a06">&amp;#34;/entrypoint.sh /etc…&amp;#34;&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">3&lt;/span> hours ago Up &lt;span style="color:#0000cf;font-weight:bold">3&lt;/span> hours 0.0.0.0:5000-&amp;gt;5000/tcp, :::5000-&amp;gt;5000/tcp kind-registry
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl cluster-info
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Kubernetes control plane is running at https://172.17.0.1:41299
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>KubeDNS is running at https://172.17.0.1:41299/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>To further debug and diagnose cluster problems, use &lt;span style="color:#4e9a06">&amp;#39;kubectl cluster-info dump&amp;#39;&lt;/span>.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Build Hive and push the image to the local registry:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ &lt;span style="color:#000">CGO_ENABLED&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> &lt;span style="color:#000">IMG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>localhost:5000/hive:latest make docker-dev-push
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Deploy Hive to the hive cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ &lt;span style="color:#000">IMG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>localhost:5000/hive:latest make deploy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Because we are not running on OpenShift we must also create a secret with
+certificates for the hiveadmission webhooks:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ ./hack/hiveadmission-dev-cert.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>If the hive cluster is using node image &lt;code>kindest/node:v1.24.0&lt;/code> or later, you will
+have to additionally run:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ ./hack/create-service-account-secrets.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>because starting in Kubernetes 1.24.0, secrets are no longer automatically generated
+for service accounts.&lt;/p>
+&lt;p>Tip: if it fails, check &lt;code>kubectl&lt;/code> version. The &lt;code>Client&lt;/code> and &lt;code>Server&lt;/code> versions
+should be in sync:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl version --short
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Client Version: v1.24.0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Kustomize Version: v4.5.4
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Server Version: v1.24.0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Checking the Hive pods:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl get pods -n hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hive-clustersync-0 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 26m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hive-controllers-79bbbc7f98-q9pxm 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 26m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hive-operator-69c4649b96-wmd79 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 26m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hiveadmission-6697d9df99-jdl4l 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 26m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hiveadmission-6697d9df99-s9pv9 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 26m
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="managed-cluster---kind">Managed Cluster - Kind&lt;/h2>
+&lt;p>Open a new terminal.&lt;/p>
+&lt;p>Export the Hive kubeconfig filename (it will be created later):&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/cluster1.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Enter the &lt;code>hive&lt;/code> directory:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Create the managed cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ ./hack/create-kind-cluster.sh cluster1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Creating cluster &lt;span style="color:#4e9a06">&amp;#34;cluster1&amp;#34;&lt;/span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Ensuring node image &lt;span style="color:#ce5c00;font-weight:bold">(&lt;/span>kindest/node:v1.24.0&lt;span style="color:#ce5c00;font-weight:bold">)&lt;/span> 🖼
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Preparing nodes 📦
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Writing configuration 📜
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Starting control-plane 🕹️
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Installing CNI 🔌
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ✓ Installing StorageClass 💾
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set kubectl context to &lt;span style="color:#4e9a06">&amp;#34;kind-cluster1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>You can now use your cluster with:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl cluster-info --context kind-cluster1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Have a nice day! 👋
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 😊
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>/tmp/cluster1.conf&lt;/code> file is created now. Checking the installation:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ docker ps
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>267fa20f4a0f kindest/node:v1.24.0 &lt;span style="color:#4e9a06">&amp;#34;/usr/local/bin/entr…&amp;#34;&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">2&lt;/span> minutes ago Up &lt;span style="color:#0000cf;font-weight:bold">2&lt;/span> minutes 172.17.0.1:40431-&amp;gt;6443/tcp cluster1-control-plane
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>901f215229a4 kindest/node:v1.24.0 &lt;span style="color:#4e9a06">&amp;#34;/usr/local/bin/entr…&amp;#34;&lt;/span> About an hour ago Up About an hour 172.17.0.1:41299-&amp;gt;6443/tcp hive-control-plane
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>0d4bf61da0a3 registry:2 &lt;span style="color:#4e9a06">&amp;#34;/entrypoint.sh /etc…&amp;#34;&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">5&lt;/span> hours ago Up &lt;span style="color:#0000cf;font-weight:bold">5&lt;/span> hours 0.0.0.0:5000-&amp;gt;5000/tcp, :::5000-&amp;gt;5000/tcp kind-registry
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl cluster-info
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Kubernetes control plane is running at https://172.17.0.1:40431
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>KubeDNS is running at https://172.17.0.1:40431/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>To further debug and diagnose cluster problems, use &lt;span style="color:#4e9a06">&amp;#39;kubectl cluster-info dump&amp;#39;&lt;/span>.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Before we install OLM, we have to edit the install scripts to use &lt;code>cluster1&lt;/code>. Go into &lt;code>scripts/build_local.sh&lt;/code>
+and replace&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span> &lt;span style="color:#204a87;font-weight:bold">if&lt;/span> &lt;span style="color:#ce5c00;font-weight:bold">[[&lt;/span> &lt;span style="color:#4e9a06">${#&lt;/span>&lt;span style="color:#000">CLUSTERS&lt;/span>&lt;span style="color:#000;font-weight:bold">[@]&lt;/span>&lt;span style="color:#4e9a06">}&lt;/span> &lt;span style="color:#ce5c00;font-weight:bold">==&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1&lt;/span> &lt;span style="color:#ce5c00;font-weight:bold">]]&lt;/span>&lt;span style="color:#000;font-weight:bold">;&lt;/span> &lt;span style="color:#204a87;font-weight:bold">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#000">KIND_FLAGS&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#4e9a06">&amp;#34;--name &lt;/span>&lt;span style="color:#4e9a06">${&lt;/span>&lt;span style="color:#000">CLUSTERS&lt;/span>&lt;span style="color:#000;font-weight:bold">[0]&lt;/span>&lt;span style="color:#4e9a06">}&lt;/span>&lt;span style="color:#4e9a06">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#204a87">echo&lt;/span> &lt;span style="color:#4e9a06">&amp;#39;Use cluster ${CLUSTERS[0]}&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#204a87;font-weight:bold">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>with&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span> &lt;span style="color:#000">KIND_FLAGS&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#4e9a06">&amp;#34;--name cluster1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now enter the OLM directory:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ &lt;span style="color:#204a87">cd&lt;/span> ../operator-lifecycle-manager/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/operator-lifecycle-manager$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Install the CRDs and OLM using:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/operator-lifecycle-manager$ make run-local
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>OLM pods should be running now:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/git/operator-lifecycle-manager$ kubectl get pods -n olm
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME READY STATUS RESTARTS AGE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>catalog-operator-54bbdffc6b-hf8rz 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 87s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>olm-operator-6bfbd74fb8-cjl4b 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 87s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>operatorhubio-catalog-gdk2d 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 48s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>packageserver-5d67bbc56b-6vxqb 1/1 Running &lt;span style="color:#0000cf;font-weight:bold">0&lt;/span> 46s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>With the cluster1 installed, let&amp;rsquo;s create a &lt;code>ClusterDeployment&lt;/code> in Hive
+pointing to it.&lt;/p>
+&lt;p>Export the Hive kubeconfig filename and enter the &lt;code>hive&lt;/code> directory (or just
+switch to the first terminal, the one used to deploy Hive):&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/hive.conf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> hive
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Attention: hiveutil wants you to have default credentials in ~/.aws/credentials
+You can fake them like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ cat ~/.aws/credentials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ce5c00;font-weight:bold">[&lt;/span>default&lt;span style="color:#ce5c00;font-weight:bold">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#000">aws_access_key_id&lt;/span> &lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span> foo
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#000">aws_secret_access_key&lt;/span> &lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span> bar
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Because Hive will not provision that cluster, we have can use the &lt;code>hiveutil&lt;/code>
+to adopt the cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ bin/hiveutil create-cluster &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--base-domain&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>new-installer.openshift.com kind-cluster1 &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt --adopt-admin-kubeconfig&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/cluster1.conf &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt-infra-id&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>fakeinfra &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt-cluster-id&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>fakeid
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Checking the &lt;code>ClusterDeployment&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl get clusterdeployment
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME PLATFORM REGION CLUSTERTYPE INSTALLED INFRAID VERSION POWERSTATE AGE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kind-cluster1 aws us-east-1 &lt;span style="color:#204a87">true&lt;/span> infra1 48s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Checking the &lt;code>ClusterDeployment&lt;/code> status:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl get clusterdeployment kind-cluster1 -o json &lt;span style="color:#000;font-weight:bold">|&lt;/span> jq .status.conditions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ce5c00;font-weight:bold">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastProbeTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-01T14:02:42Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastTransitionTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-01T14:02:42Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSet apply is successful&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;reason&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSetApplySuccess&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;False&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSetFailed&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastProbeTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-01T14:02:41Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastTransitionTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-01T14:02:41Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;cluster is reachable&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;reason&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;ClusterReachable&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;False&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;Unreachable&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ce5c00;font-weight:bold">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="managed-cluster---crc">Managed Cluster - CRC&lt;/h2>
+&lt;p>Export the CRC kubeconfig filename to be created:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/crc.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Login to your CRC cluster with the &lt;code>kubeadmin&lt;/code> user:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ oc login -u kubeadmin -p **** https://api.crc.testing:6443
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>/tmp/crc.conf&lt;/code> file should now contain the dockerconfig for your
+CRC cluster.&lt;/p>
+&lt;p>Export the Hive kubeconfig filename and enter the &lt;code>hive&lt;/code> directory (or just
+switch to the first terminal, the one used to deploy Hive):&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/hive.conf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">cd&lt;/span> hive
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Because Hive will not provision that cluster, we have can use the &lt;code>hiveutil&lt;/code>
+to adopt it:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ bin/hiveutil create-cluster &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--base-domain&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>crc.openshift.com crc &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt --adopt-admin-kubeconfig&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/crc.conf &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt-infra-id&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>fakeinfra &lt;span style="color:#4e9a06">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#4e9a06">&lt;/span>--adopt-cluster-id&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>fakeid
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Checking the &lt;code>ClusterDeployment&lt;/code> status:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kubectl get clusterdeployment crc -o json &lt;span style="color:#000;font-weight:bold">|&lt;/span> jq .status.conditions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ce5c00;font-weight:bold">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastProbeTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-02T14:21:02Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastTransitionTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-02T14:21:02Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;cluster is reachable&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;reason&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;ClusterReachable&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;False&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;Unreachable&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">}&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastProbeTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-02T01:45:19Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;lastTransitionTime&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;2021-02-02T01:45:19Z&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSet apply is successful&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;reason&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSetApplySuccess&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;False&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#4e9a06">&amp;#34;type&amp;#34;&lt;/span>: &lt;span style="color:#4e9a06">&amp;#34;SyncSetFailed&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ce5c00;font-weight:bold">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ce5c00;font-weight:bold">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Tip: in case the cluster status is &amp;ldquo;unreachable&amp;rdquo;, that&amp;rsquo;s because Hive runs
+in a Kubernetes cluster deployed inside a container, and it is trying to access
+the CRC virtual machine that is controlled by libvirt. You will have to figure
+out you firewall, but this is what worked for me:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ firewall-cmd --permanent --zone&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>trusted --change-interface&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>docker0
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>success
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$ firewall-cmd --reload
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>success
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="selectorsyncset">SelectorSyncSet&lt;/h2>
+&lt;p>Export the Hive kubeconfig:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/hive.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Create a test &lt;code>SelectorSyncSet&lt;/code>. Example:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#204a87;font-weight:bold">apiVersion&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">v1&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">kind&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">List&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">metadata&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>{}&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline">&lt;/span>&lt;span style="color:#204a87;font-weight:bold">items&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>- &lt;span style="color:#204a87;font-weight:bold">apiVersion&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">hive.openshift.io/v1&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">kind&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">SelectorSyncSet&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">metadata&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">name&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">cso-test&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">spec&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">clusterDeploymentSelector&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">matchLabels&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">api.openshift.com/cso-test&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#4e9a06">&amp;#39;true&amp;#39;&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">resourceApplyMode&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">Sync&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">resources&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>- &lt;span style="color:#204a87;font-weight:bold">apiVersion&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">v1&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">kind&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">Namespace&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">metadata&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">annotations&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>{}&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">labels&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>{}&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#204a87;font-weight:bold">name&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">cso&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Apply it:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ kubectl apply -f cso-test.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>selectorsyncset.hive.openshift.io/cso-test created
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now edit the &lt;code>ClusterDeployment&lt;/code> of a cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~$ kubectl edit clusterdeployment kind-cluster1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Adding the label &lt;code>api.openshift.com/cso-test: 'true'&lt;/code> to it. Save and exit.&lt;/p>
+&lt;p>The &lt;code>cso&lt;/code> namespace should be now created in the target cluster:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#204a87">export&lt;/span> &lt;span style="color:#000">KUBECONFIG&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/tmp/cluster1.conf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc get namespace cso
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME STATUS AGE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cso Active 81s
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="cleanup">Cleanup&lt;/h2>
+&lt;p>To clean-up, delete the two clusters and surrounding clutter:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>~/hive$ kind delete cluster --name hive
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$ kind delete cluster --name cluster1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$ docker rm -f kind-registry
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>~/hive$ docker network rm kind
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item></channel></rss>

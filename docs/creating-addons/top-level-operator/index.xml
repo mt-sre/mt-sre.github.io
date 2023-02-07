@@ -1,0 +1,87 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Top Level Operator</title><link>/docs/creating-addons/top-level-operator/</link><description>Recent content in Top Level Operator on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/creating-addons/top-level-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Customer Notifications</title><link>/docs/creating-addons/top-level-operator/customer-notifications/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/top-level-operator/customer-notifications/</guid><description>
+&lt;h2 id="status-page">Status Page&lt;/h2>
+&lt;p>&lt;a href="https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/app-sre/statuspage.md">https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/app-sre/statuspage.md&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://service.pages.redhat.com/dev-guidelines/docs/appsre/advanced/statuspage/">https://service.pages.redhat.com/dev-guidelines/docs/appsre/advanced/statuspage/&lt;/a>&lt;/p>
+&lt;h2 id="service-logs">Service Logs&lt;/h2>
+&lt;p>&lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants-sops/-/blob/main/MT-SRE/sops/mt-sre-customer-notification.md">https://gitlab.cee.redhat.com/service/managed-tenants-sops/-/blob/main/MT-SRE/sops/mt-sre-customer-notification.md&lt;/a>&lt;/p>
+&lt;h2 id="internal-email">Internal Email&lt;/h2>
+&lt;p>There are multiple ways a user or group can get notified of service events (e.g.
+planned maintenance, outages). There are two fields in the addon metadata file
+(see Add-On metadata file &lt;a href="https://github.com/mt-sre/managed-tenants-cli/blob/main/docs/tenants/zz_metadata_schema_generated.md">schema documentation&lt;/a>
+for more information) where email addresses can be provided:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>addonOwner&lt;/code>: &lt;em>REQUIRED&lt;/em> Point of contact for communications from Service Delivery to
+addon owners. Where possible, this should be a development team mailing list
+(rather than an individual developer).&lt;/li>
+&lt;li>&lt;code>addonNotifications&lt;/code>: This is a list of additional email addresses of
+employees who would like to receive notifications about a service.&lt;/li>
+&lt;/ul>
+&lt;p>There is also a mailing list that receives notifications for all services managed
+by Service Delivery. Subscribe to the sd-notifications mailing list
+&lt;a href="https://post-office.corp.redhat.com/mailman/listinfo/sd-notifications">here&lt;/a>.&lt;/p></description></item><item><title>Docs: Dependencies</title><link>/docs/creating-addons/top-level-operator/dependencies/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/top-level-operator/dependencies/</guid><description>
+&lt;p>This document describes the supported implementation for Addon dependencies,
+as signed-off by the Managed Tenants SRE Team.&lt;/p>
+&lt;h2 id="dependencies-specification">Dependencies Specification&lt;/h2>
+&lt;ul>
+&lt;li>Addons must specify dependencies using the OLM dependencies feature,
+documented &lt;a href="https://docs.openshift.com/container-platform/4.7/operators/understanding/olm/olm-understanding-dependency-resolution.html">here&lt;/a>&lt;/li>
+&lt;li>The dependencies must have the version pin-pointed. Ranges are not allowed.&lt;/li>
+&lt;li>The dependencies must come from a &lt;em>Trusted Catalog&lt;/em>. See the
+&lt;a href="#trusted-catalogs">Trusted Catalogs&lt;/a> section for details.&lt;/li>
+&lt;/ul>
+&lt;h2 id="trusted-catalogs">Trusted Catalogs&lt;/h2>
+&lt;p>The Addon and its dependencies must come from Trusted Catalogs. Trusted
+Catalogs are those with content published by the Managed Services Pipelines,
+implemented by CPaaS, or by the Managed Tenants SRE Team.&lt;/p>
+&lt;h3 id="trusted-catalogs-list">Trusted Catalogs List&lt;/h3>
+&lt;ul>
+&lt;li>Addon catalog: the catalog created by the Managed Tenants SRE Team, for the
+purpose of releasing the Addon. Dependency bundles can be shipped in the same
+catalog of the Addon. The Addon catalog is considered &amp;ldquo;trusted&amp;rdquo; for
+the dependencies it carries.&lt;/li>
+&lt;li>Red Hat Operators catalog: the catalog content goes through the Managed
+Services Pipelines, same process to build some Addons themselves, just with
+a different release process. This catalog is considered &amp;ldquo;trusted&amp;rdquo; and can be
+used for dependencies.&lt;/li>
+&lt;/ul>
+&lt;h3 id="including-a-catalog-in-the-trusted-list">Including a Catalog in the Trusted List&lt;/h3>
+&lt;ul>
+&lt;li>Make sure that the catalog is available on OSD and its content is released
+through the Managed Services Pipelines, implemented by CPaaS.&lt;/li>
+&lt;li>Create a Jira ticket in the
+&lt;a href="https://issues.redhat.com/secure/CreateIssue.jspa?pid=12326231&amp;amp;issuetype=3">MT-SRE Team backlog&lt;/a>,
+requesting the assessment of the OSD catalog you want to consider as
+&amp;ldquo;trusted&amp;rdquo;.&lt;/li>
+&lt;/ul>
+&lt;h2 id="issues">Issues&lt;/h2>
+&lt;p>There&amp;rsquo;s a feature request to the OLM Team to allow specifying the
+CatalogSource used for the dependencies:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://issues.redhat.com/browse/OLM-2249">OLM-2249&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Docs: Environments</title><link>/docs/creating-addons/top-level-operator/environments/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/top-level-operator/environments/</guid><description>
+&lt;h2 id="mandatory-environments">Mandatory environments&lt;/h2>
+&lt;p>Add-ons are normally deployed to two environments:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>ocm stage&lt;/code>: development/testing - All add-ons &lt;strong>must&lt;/strong> deploy to this
+environment before being released to production.&lt;/li>
+&lt;li>&lt;code>ocm production&lt;/code>: once the deployment in stage has been reviewed,
+accepted, and approved it can be promoted to production via &lt;code>/lgtm&lt;/code> by
+your SRE team.&lt;/li>
+&lt;/ul>
+&lt;p>We recommend the &lt;code>ocm stage&lt;/code> and &lt;code>ocm production&lt;/code> add-on metadata be as
+similar as possible.&lt;/p>
+&lt;h2 id="slos">SLOs&lt;/h2>
+&lt;p>&lt;code>ocm stage&lt;/code> have no SLO and operates with best effort support from Add-on SRE,
+SREP, and App-SRE
+&lt;code>osd stage cluster&lt;/code> have no SLO and operates with best effort support from Add-on
+SRE, SREP, and App-SRE
+&lt;code>ocm production&lt;/code> environments are subject to App-SRE &lt;a href="https://gitlab.cee.redhat.com/app-sre/contract/-/blob/master/README.md#appsre-service-level-objectives">SLOs&lt;/a>.
+&lt;code>osd production cluster&lt;/code> environments are subject OSD &lt;a href="https://source.redhat.com/groups/public/openshiftplatformsre/wiki/faq_openshift_dedicated_service_level_objectives">SLOs&lt;/a>.&lt;/p>
+&lt;h2 id="additional-environments-via-duplicate-add-ons">Additional Environments (via duplicate add-ons)&lt;/h2>
+&lt;p>Some add-on providers have had use cases which require additional add-on envs.
+While we only have &lt;code>ocm stage&lt;/code> and &lt;code>ocm prod&lt;/code>, managed-tenants may be leveraged
+to deploy to an additional add-on (like edge or internal). Today we don&amp;rsquo;t recommend
+this practice due to the need to clone all add-on metadata which increases the
+risk for incorrect metadata going to production/customer clusters.&lt;/p>
+&lt;p>If you need to do the above, please reach out to your assigned SRE team for
+guidance first.&lt;/p></description></item></channel></rss>

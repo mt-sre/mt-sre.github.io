@@ -1,0 +1,66 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Addons Flow</title><link>/docs/addons-flow/</link><description>Recent content in Addons Flow on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/addons-flow/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Addons Flow Architecture</title><link>/docs/addons-flow/architecture/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/addons-flow/architecture/</guid><description>
+&lt;p>Add-Ons are Operators. As such, Add-Ons are installed using typical Operator
+objects, like &lt;code>Subscription&lt;/code>, &lt;code>OperatorGroup&lt;/code> and &lt;code>CatalogSource&lt;/code>.&lt;/p>
+&lt;p>To get those objects into the OpenShift clusters, we rely on
+&lt;a href="https://cloud.redhat.com/openshift/">OCM&lt;/a> and
+&lt;a href="https://github.com/openshift/hive">Hive&lt;/a>. You can read more
+about Hive in this &lt;a href="https://cloud.redhat.com/blog/openshift-hive-cluster-as-a-service">blog post&lt;/a>.&lt;/p>
+&lt;h2 id="deployment">Deployment&lt;/h2>
+&lt;p>Our input is the Add-On metadata file
+(&lt;code>managed-tenants/addons/&amp;lt;addon_name&amp;gt;/metadata/&amp;lt;stage|prod&amp;gt;/addon.yaml&lt;/code>)
+and the corresponding bundles directories
+(&lt;code>managed-tenants-bundles/addons/&amp;lt;addon_name&amp;gt;/&lt;/code>).
+With that in place, we will:&lt;/p>
+&lt;ul>
+&lt;li>Build the Operator catalog container image.
+&lt;ul>
+&lt;li>Push the catalog image to our organization repository in Quay.io.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Generate a
+&lt;a href="https://github.com/openshift/hive/blob/master/docs/syncset.md#syncset-object-definition">SyncSet&lt;/a>
+with the Operator install objects.
+&lt;ul>
+&lt;li>Apply the SyncSet to Hive.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Generate the OCM API payload.
+&lt;ul>
+&lt;li>Post the payload to OCM.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>The Managed Tenants CI is in charge of processing the input and deploying all
+the artifacts. This image shows the data flows:&lt;/p>
+&lt;p>&lt;img src="/addon-syncset-installation.png" alt="Data Flows">&lt;/p>
+&lt;p>With that in place, OCM will present an &amp;ldquo;Add-Ons&amp;rdquo; tab, listing all the Add-Ons
+that your organization has quota for. Example:&lt;/p>
+&lt;p>&lt;img src="/architecture_ocm_ui.png" alt="Data Flows">&lt;/p>
+&lt;h2 id="installation">Installation&lt;/h2>
+&lt;p>When you click &amp;ldquo;Install&amp;rdquo; in the OCM Web UI, under the hood, OCM creates a
+&lt;code>SyncSet&lt;/code> &lt;a href="https://github.com/openshift/hive/blob/master/docs/syncset.md#syncset-object-definition">object&lt;/a>
+in Hive. The &lt;code>SyncSet&lt;/code> object references the cluster in which the addon was just
+installed in the &lt;code>clusterDeploymentRefs&lt;/code> field.&lt;/p>
+&lt;p>&lt;img src="/architecture_install_flow.png" alt="Data Flows">
+&lt;a href="https://excalidraw.com/#room=71d4b0273d4404dbbebf,Pk5KFYj9fFvXSvObY6juCA">excalidraw&lt;/a>&lt;/p>
+&lt;p>From there, OLM will take over, installing the Operator in the OpenShift
+cluster. While OLM is installing the Operator, OCM will keep polling the
+telemetry data reported by the cluster, waiting for the &lt;code>csv_succeeded=1&lt;/code>
+metric from that Operator:&lt;/p>
+&lt;p>&lt;img src="/architecture_telemetry_wait.png" alt="Data Flows">&lt;/p>
+&lt;p>At some point, when the Operator is fully installed, OCM will reflect that in
+the Web UI:&lt;/p>
+&lt;p>&lt;img src="/architecture_telemetry_done.png" alt="Data Flows">&lt;/p>
+&lt;h2 id="addon-status-lifecycle">Addon Status Lifecycle&lt;/h2>
+&lt;p>&lt;img src="/addon-status-ocm.png" alt="Addon Status Lifecycle">&lt;/p>
+&lt;h2 id="deprecated-selectorsyncset-installation">Deprecated SelectorSyncSet Installation&lt;/h2>
+&lt;p>&lt;img src="/architecture_data_flow.png" alt="Data Flows">
+When you click &amp;ldquo;Install&amp;rdquo; in the OCM Web UI, under the hood, OCM will apply
+a label to the corresponding &lt;code>ClusterDeployment&lt;/code> object in Hive.&lt;/p>
+&lt;p>That label is the same label used in the &lt;code>SelectorSyncSet&lt;/code> as a &lt;code>matchLabel&lt;/code>.&lt;/p>
+&lt;p>With the &lt;code>ClusterDeployment&lt;/code> label now matching the &lt;code>SelectorSyncSet&lt;/code> label,
+Hive will apply all the objects in the &lt;code>SelectorSyncSet&lt;/code> to the target cluster:&lt;/p></description></item><item><title>Docs: APIs</title><link>/docs/addons-flow/apis/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/addons-flow/apis/</guid><description>
+&lt;p>You can find the Addons APIs &lt;a href="https://api.openshift.com/#/default">here&lt;/a> under
+the paths &lt;code>/api/clusters_mgmt/v1/addons/{addon_id}&lt;/code>,
+&lt;code>/api/clusters_mgmt/v1/clusters/{cluster_id}/addon_inquiries&lt;/code> and
+&lt;code>/api/clusters_mgmt/v1/clusters/{cluster_id}/addons/{addoninstallation_id}&lt;/code>.&lt;/p></description></item></channel></rss>

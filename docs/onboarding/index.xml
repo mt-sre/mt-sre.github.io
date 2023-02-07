@@ -1,1 +1,77 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Onboarding</title><link>/docs/onboarding/</link><description>Recent content in Onboarding on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/onboarding/index.xml" rel="self" type="application/rss+xml"/></channel></rss>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Managed Tenants SRE – Onboarding</title><link>/docs/onboarding/</link><description>Recent content in Onboarding on Managed Tenants SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/onboarding/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Introduction</title><link>/docs/onboarding/introduction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/introduction/</guid><description>
+&lt;p>The Repeatable Onboarding for Managed Services (ROMS) article on &lt;a href="https://source.redhat.com/communities/communities_of_practice/cross_cutting_co/cloud_services_cop/wiki/draft_how_to_get_started_with_roms_repeatable_onboarding_for_managed_services">source&lt;/a>
+has a great introduction to managed services.&lt;/p>
+&lt;p>There are multiple steps to onboard a managed service:&lt;/p>
+&lt;ol>
+&lt;li>First the &lt;a href="roms.md">ROMS&lt;/a> process needs to be completed.&lt;/li>
+&lt;li>Then the &lt;a href="acceptance-criteria-checklist.md">onboardig acceptance criteria checklist&lt;/a>
+has to be completed, along with other requirements, to onboard the addon to production.&lt;/li>
+&lt;li>The addon must then pass a &lt;a href="soak-test.md">soak test&lt;/a>.&lt;/li>
+&lt;li>The addon then has to run in production for a given amount of time to prove its
+stability, and then the pager can be handed over. See the
+&lt;a href="pager-handover.md">pager handover&lt;/a> section for more information.&lt;/li>
+&lt;/ol></description></item><item><title>Docs: ROMS</title><link>/docs/onboarding/roms/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/roms/</guid><description>
+&lt;p>Please start at the ROMS documentation on the Source
+&lt;a href="https://source.redhat.com/communities/communities_of_practice/cross_cutting_co/cloud_services_cop/wiki/draft_how_to_get_started_with_roms_repeatable_onboarding_for_managed_services">here&lt;/a>
+to get an overview of managed services and ROMS.&lt;/p>
+&lt;h3 id="kickoff-overview">Kickoff Overview&lt;/h3>
+&lt;p>The Service Owners starts
+&lt;a href="https://docs.google.com/spreadsheets/d/1qgK3_Yt3wRTyCqxVICrobDNmwMwjoSDPrQvy6vbTPYI/edit#gid=1141875805">ROMS Checklist&lt;/a>
+(including SAG review). SRES Architects will evaluate the service, determine whether it&amp;rsquo;s
+suitable and viable. If accepted it will receive a prioritization rating from the SRES
+Architects, and finally assigned to an SRE team by the Addon SRE Manager.&lt;/p>
+&lt;p>&lt;strong>IMPORTANT&lt;/strong>: As an addon provider you can self-service onto OCM stage via the addon
+flow and start prototyping before completing ROMS. You are free to experiment and
+kick the tires! The only restrictions in place are the available support forums to
+the Addon SRE team. These are limited to
+&lt;a href="https://coreos.slack.com/archives/C01L46M0FQC">#forum-managed-tenants&lt;/a>
+and to the weekly &lt;code>SD: Layered Products Sync&lt;/code> call (You can request an invitation via #forum-managed-tenants)&lt;/p>
+&lt;h3 id="kickoff-steps">Kickoff Steps&lt;/h3>
+&lt;ul>
+&lt;li>Service Owner creates an Epic in the &lt;a href="https://issues.redhat.com/projects/SDE">SDE&lt;/a> board.
+&lt;ul>
+&lt;li>Service Owner will request sign-off from SRES Architects: &lt;a href="https://rover.redhat.com/people/profile/pbergene">Paul Bergene&lt;/a>,
+&lt;a href="https://rover.redhat.com/people/profile/jmelis">Jaime Melis&lt;/a> and &lt;a href="https://rover.redhat.com/people/profile/kasingh">Karanbir Singh&lt;/a>.
+Note that the preferred communication channels are the JIRA or the &lt;a href="https://app.slack.com/client/T027F3GAJ/CCNL6UJ9W/details/top">#sd-org channel&lt;/a>.&lt;/li>
+&lt;li>Service Owner includes reference to the &lt;a href="https://docs.google.com/document/d/1TjGSJdyIfsZ_90ea_bWEpj8y1pOjpq6tq5xnHrn5K68/edit">SRES Onboarding Questionnaire&lt;/a>
+(part of ROMS) in the epic.&lt;/li>
+&lt;li>The epic should also reference a Service Definition Document. Service Definition
+examples: &lt;a href="https://www.openshift.com/products/dedicated/service-definition">OSD&lt;/a>,
+&lt;a href="https://docs.google.com/document/d/1AEx6INWMAf3iyE9P_daS4XwaL5Pl2JXHp1jg-OMPhXI/edit#heading=h.vz6sfx5le5cl">OCS&lt;/a>,
+&lt;a href="https://docs.google.com/document/d/1MKLhNu6ALmuA4UdoqfbvEbLrpGSDcSRaKvMTQX28jdU/edit">RHODS&lt;/a>,
+&lt;a href="https://access.redhat.com/articles/5534341">RHOAM&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>SRES Architects and the Addon SRE team lead will review the epic,
+discuss with the Service Owners and accept or reject it.
+SRES Architects will also assign a priority.&lt;/li>
+&lt;li>Addon SRE lead will scope out the work needed to onboard the service into Addon SRE.&lt;/li>
+&lt;/ul></description></item><item><title>Docs: Acceptance Criteria Checklist</title><link>/docs/onboarding/acceptance-criteria-checklist/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/acceptance-criteria-checklist/</guid><description>
+&lt;h2 id="addon-sre-acceptance-criteria-checklist">Addon SRE Acceptance Criteria checklist&lt;/h2>
+&lt;p>The Service Owners, with the assistance of the Addon SRE team,
+will deploy the service to production while the SLOs are being
+implemented and fine-tuned. The Addon SRE onboarding team will
+work through the
+&lt;a href="https://docs.google.com/document/d/1c0drua0YciULkEuYsTCAM1E_JJK-b2TgjTeFnjxh_6c/edit">Addon SRE Acceptance Criteria Checklist&lt;/a>
+process.&lt;/p>
+&lt;h2 id="additional-requirements">Additional Requirements&lt;/h2>
+&lt;p>There are also requirements from other teams, which can be found &lt;a href="../release-process/gating_for_prod.md">here&lt;/a>.&lt;/p>
+&lt;h2 id="next-steps">Next Steps&lt;/h2>
+&lt;p>If all requirements are passed successfully, the service owners will be allowed to
+deploy to production. Once the service is running in production, the service can
+begin its transition period. This is where an addon proves its stability for a given
+amount of time and then the pager is handed over to the SRE team. Read more about
+the transition period &lt;a href="pager-handover.md">here&lt;/a>.&lt;/p></description></item><item><title>Docs: Pager Handover</title><link>/docs/onboarding/pager-handover/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/pager-handover/</guid><description>
+&lt;h2 id="transition-overview">Transition Overview&lt;/h2>
+&lt;p>This stage focuses on the viability of the service. If, after an agreed amount of time of
+being in production(defaults to a 4-week rolling window), the service meets its SLOs then
+it will be considered viable by SRE and the pager will be transferred to the Addon SRE
+team.&lt;/p>
+&lt;h2 id="viability-steps">Viability Steps&lt;/h2>
+&lt;ul>
+&lt;li>The service runs in production and SLO data is collected.&lt;/li>
+&lt;li>An Addon SRE reviews the SLOs and SOPs.&lt;/li>
+&lt;li>If the SLOs are met, the service will be transitioned to Addon SRE.&lt;/li>
+&lt;li>Any critical alerts will be routed to the Addon SRE 24x7 PagerDuty escalation policy.&lt;/li>
+&lt;/ul></description></item><item><title>Docs: Soak Test</title><link>/docs/onboarding/soak-test/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/soak-test/</guid><description>
+&lt;p>WIP&lt;/p></description></item></channel></rss>
