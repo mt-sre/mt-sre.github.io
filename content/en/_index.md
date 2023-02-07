@@ -8,7 +8,7 @@ weight: 10
 
 <div class="cover-section">
   <h1 class="display-1">Red Hat Layered Products!</h1>
- <p class="lead">Managing managed services on managed OpenShift!</p>
+ <p class="lead">Providing managed services on managed Openshift!</p>
 
   <div class="mt-5 animate__animated animate__slideInLeft animate__fast">
     <h1>Product Managers / Team Leads</h1>
@@ -17,7 +17,8 @@ weight: 10
       How to get SRE support for managed services?
     </p>
     <p>
-      Guides and resources to help you get a service into production and the hands of customers.
+      Guides and resources to help you get a service into production
+      and into the hands of customers.
     </p>
     <a class="btn btn-lg btn-primary mr-3 mb-4"
         href="{{< relref "/docs/onboarding/introduction" >}}">Get Started</a>

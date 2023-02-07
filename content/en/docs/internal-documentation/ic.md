@@ -52,7 +52,7 @@ PagerDuty Schedule: <https://redhat.pagerduty.com/schedules#PM3YCH1>
   * `#mt-cs-sre-teamhandover`
   * `#forum-managed-tenants`
 * Mailing lists:
-  * managed-tenants@redhat.com
+  * mt-cs-sre@redhat.com
 * Git Repositories:
   * <https://gitlab.cee.redhat.com/service/managed-tenants-bundles>
       (not automated)

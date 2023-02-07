@@ -3,9 +3,10 @@ title: "SLO Dashboards"
 date: 2022-12-15T00:53:51+01:00
 ---
 
-Development teams are requested to co-maintain, with the MT-SRE Team, SLO
-Dashboards for the Addons they develop. This document explains how to
-bootstrap the dashboard creation and deployment.
+Development teams are required to co-maintain, in conjunction with
+the MT-SRE Team, SLO Dashboards for the Addons they develop. This
+document explains how to bootstrap the dashboard creation and
+deployment.
 
 ## First Dashboard
 

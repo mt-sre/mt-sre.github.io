@@ -8,7 +8,8 @@ objects, like `Subscription`, `OperatorGroup` and `CatalogSource`.
 
 To get those objects into the OpenShift clusters, we rely on
 [OCM](https://cloud.redhat.com/openshift/) and
-[Hive](https://github.com/openshift/hive).
+[Hive](https://github.com/openshift/hive). You can read more
+about Hive in this [blog post](https://cloud.redhat.com/blog/openshift-hive-cluster-as-a-service).
 
 ## Deployment
 
@@ -23,7 +24,7 @@ With that in place, we will:
 * Generate a
   [SyncSet](https://github.com/openshift/hive/blob/master/docs/syncset.md#syncset-object-definition)
   with the Operator install objects.
-  * Apply the SelectorSyncSet to Hive.
+  * Apply the SyncSet to Hive.
 * Generate the OCM API payload.
   * Post the payload to OCM.
 

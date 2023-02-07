@@ -2,6 +2,17 @@
 title: "Customer Notifications"
 date: 2022-12-15T00:53:51+01:00
 ---
+## Status Page
+
+<https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/app-sre/statuspage.md>
+
+<https://service.pages.redhat.com/dev-guidelines/docs/appsre/advanced/statuspage/>
+
+## Service Logs
+
+<https://gitlab.cee.redhat.com/service/managed-tenants-sops/-/blob/main/MT-SRE/sops/mt-sre-customer-notification.md>
+
+## Internal Email
 
 There are multiple ways a user or group can get notified of service events (e.g.
 planned maintenance, outages). There are two fields in the addon metadata file
