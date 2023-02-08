@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "Managed Tenants SRE Docs"
+title = "Layered Products SRE Docs"
 
 enableRobotsTXT = true
 
@@ -70,8 +70,8 @@ anchor = "smart"
 
 [languages]
 [languages.en]
-title = "Managed Tenants SRE"
-description = "Documentation for Managed Tenants SRE at Red Hat"
+title = "Layered Products SRE"
+description = "Documentation for Layered Products SRE at Red Hat"
 languageName ="English"
 # Weight used for sorting.
 weight = 1

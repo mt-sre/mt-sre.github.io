@@ -1,6 +1,6 @@
-# Managed Tenants SRE Docs
+# Layered Products SRE Docs
 
-Documentation for Managed Tenants SRE at Red Hat.
+Documentation for Layered Products SRE at Red Hat.
 
 ## Run Locally
 

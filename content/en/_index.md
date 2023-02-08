@@ -1,5 +1,5 @@
 ---
-title: "Managed Tenants SRE"
+title: "Layered Products SRE"
 linkTitle: "MT-SRE"
 weight: 10
 ---
