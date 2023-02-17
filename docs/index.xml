@@ -834,7 +834,20 @@ MT-SRE&lt;/li>
 (tenants-related MRs, partially automated)&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>Docs: Getting OCM API Access</title><link>/docs/internal-documentation/access/ocm-api-access/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/access/ocm-api-access/</guid><description/></item><item><title>Docs: On-Call</title><link>/docs/internal-documentation/on-call/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/on-call/</guid><description>
+&lt;/ul></description></item><item><title>Docs: Metrics</title><link>/docs/addons-flow/metrics/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/addons-flow/metrics/</guid><description>
+&lt;h2 id="addon-operator-metrics">Addon Operator Metrics&lt;/h2>
+&lt;p>Addon operator metrics can be found in &lt;a href="https://promlens.devshift.net/">PromLens&lt;/a>
+in the &lt;code>osd-observatorum-production&lt;/code> datasource.&lt;/p>
+&lt;p>The metrics are configured in the &lt;a href="https://gitlab.cee.redhat.com/service/lifecycler/">lifecycler repo&lt;/a>
+and the &lt;a href="https://github.com/openshift/managed-cluster-config">managed-cluster-config repo&lt;/a>.
+See the following two merge requests for reference: &lt;a href="https://gitlab.cee.redhat.com/service/lifecycler/-/merge_requests/6/diffs">lifecycler MR&lt;/a>
+and &lt;a href="https://github.com/openshift/managed-cluster-config/pull/1281/files">managed-cluster-config MR&lt;/a>.&lt;/p>
+&lt;h2 id="csv_succeeded-and-csv_abnormal-metrics">&lt;code>csv_succeeded&lt;/code> and &lt;code>csv_abnormal&lt;/code> Metrics&lt;/h2>
+&lt;p>&lt;code>csv_succeeded&lt;/code> and &lt;code>csv_abnormal&lt;/code> Metrics can be found in &lt;a href="https://infogw-proxy.api.openshift.com/">production Thanos&lt;/a>
+and &lt;a href="https://infogw-proxy.api.stage.openshift.com/">stage Thanos&lt;/a>.&lt;/p>
+&lt;p>It can be useful to query for &lt;code>csv_succeeded&lt;/code> and &lt;code>csv_abnormal&lt;/code> Metrics
+by operator name, for example &lt;code>csv_succeeded{name=~&amp;quot;ocs-operator.*&amp;quot;}&lt;/code>, or
+by cluster id, for example &lt;code>csv_succeeded{_id=&amp;quot;049ea229-55dd-4e30-a2f0-87ae1dd37de6&amp;quot;}&lt;/code>.&lt;/p></description></item><item><title>Docs: Getting OCM API Access</title><link>/docs/internal-documentation/access/ocm-api-access/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/access/ocm-api-access/</guid><description/></item><item><title>Docs: On-Call</title><link>/docs/internal-documentation/on-call/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/on-call/</guid><description>
 &lt;p>&lt;a href="https://source.redhat.com/groups/public/openshiftplatformsre/wiki/team_sd_sre_on_call_practices">https://source.redhat.com/groups/public/openshiftplatformsre/wiki/team_sd_sre_on_call_practices&lt;/a>&lt;/p></description></item><item><title>Docs: Run Hive Locally</title><link>/docs/internal-documentation/tutorials/run_hive_locally/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/tutorials/run_hive_locally/</guid><description>
 &lt;p>This guide describes how to deploy a Hive environment in your local machine
 using &lt;a href="https://kind.sigs.k8s.io/">kind&lt;/a>.&lt;/p>
