@@ -22,4 +22,4 @@ team.
 ## Further Links
 
 For information on how to set up the PagerDuty integration for your addon,
-the [PagerDuty](../creating-addons/monitoring/pagerduty_integration.md) section.
+see the [PagerDuty Integration](../creating-addons/monitoring/pagerduty_integration.md) documentation.
