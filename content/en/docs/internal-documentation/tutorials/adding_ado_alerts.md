@@ -63,7 +63,7 @@ expr: (count by (name, _id) (addon_operator_addon_health_info{version!="0.0.0"})
 Explanation:
 
 aggregating the metrics using `name, _id`
-we need to raise an alert for the metric with an `id, name` which does not have atleast one value of 1 in the aggregated metrics for the particular name, _id
+we need to raise an alert for the metric with an `id, name` which does not have at least one value of 1 in the aggregated metrics for the particular name, _id
 
 from the entire addon_operator_addon_health_info metrics aggregated by count
 `[(count by (name, _id) (addon_operator_addon_health_info{version!="0.0.0"}))]`
