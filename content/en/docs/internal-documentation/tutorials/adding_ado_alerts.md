@@ -33,7 +33,8 @@ item and secrets are defined [here](https://gitlab.cee.redhat.com/service/app-in
 we can define rules for the addon-operator metrics in the [rhobs-rules-and-dashboards](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards)
 repo in the [rules/osd](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/rules/osd)
 folder (the tenants are added as specific folders) and tests for the prometheus rules are
-defined in the [tests/rules/osd](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/test/rules/osd) folder.
+defined in the [tests/rules/osd](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/test/rules/osd)
+folder.
 The suggested way to add folder names and rules filenames for an alert is explained [here](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/rules#one-folder-per-targeted-rhobs-tenant).
 
 tldr: create file name with `.prometheusrule.yaml` as suffix at the end,
@@ -55,7 +56,8 @@ Sample `addon_operator_addon_health_info` metric data
 addon_operator_addon_health_info{_id="08d94ae0-a943-47ea-ac29-6cf65284aeba", container="metrics-relay-server", endpoint="https", instance="10.129.2.11:8443", job="addon-operator-metrics", name="managed-odh", namespace="openshift-addon-operator", pod="addon-operator-manager-7c9df45684-86mh4", prometheus="openshift-monitoring/k8s", receive="true", service="addon-operator-metrics", tenant_id="770c1124-6ae8-4324-a9d4-9ce08590094b", version="0.0.0"}
 ```
 
-The particular metric gives information about `version`, `cluster_id (_id)` and `addon_name (name)` which can be used to create the alert.
+The particular metric gives information about
+`version`, `cluster_id (_id)` and `addon_name (name)` which can be used to create the alert.
 
 - We should ignore the metrics with version `"0.0.0"`
 - The addon health is `"Unhealthy"` if no version exists for the particular
