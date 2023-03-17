@@ -12,7 +12,7 @@ the addon-operator metrics are scraped to the OSD tenant with its own service ac
 so instead of adding rules using [obsctl cli](https://github.com/observatorium/obsctl) and
 syncing them using [obsctl-reloader](https://github.com/rhobs/obsctl-reloader)
 SRE-P has a repo called [rhobs-rules-and-dashboards](https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards)
-which based on the tenant, will automatically sync rules defined in the repo to app-interface.
+which, based on the tenant, will automatically sync rules defined in the repo to app-interface.
 
 ## Overview
 
@@ -23,7 +23,7 @@ If the tenant is not defined in the repo, we need to follow the process defined
 which explains how to register the tenant in app-interface and how to configure obsctl-reloader
 to sync rules for the particular tenant.
 
-Since the OSD tenant is already registered and the obsctl-reloader configuration is already
+The OSD tenant is already registered and the obsctl-reloader configuration is already
 defined [here](https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/rhobs/observatorium-mst/cicd/saas.yaml#L127)
 (we should see osd in **MANAGED_TENANTS** parameter in the **observatorium-mst-common** named
 item and secrets are defined [here](https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/rhobs/observatorium-mst/namespaces/app-sre-stage-01/observatorium-mst-stage.yml#L79))
@@ -47,7 +47,7 @@ since it basically explains the addon health for a particular `version` and `clu
 The metrics for creating alerts can be decided and the promql queries
 can be tested out from [promlens stage](https://promlens.stage.devshift.net)
 or [promlens prod](https://promlens.devshift.net).
-The metrics are scraped from addon-operator to
+The metrics are scraped from addon-operator to the
 observatorium-mst-stage (stage) / observatorium-mst-prod (prod) datasources.
 
 Sample `addon_operator_addon_health_info` metric data:
