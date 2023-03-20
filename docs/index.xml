@@ -738,7 +738,71 @@ work.&lt;/p>
 announcements, collect feedback and discuss requirements.&lt;/p>
 &lt;h2 id="definition-of-readydone">Definition Of Ready/Done&lt;/h2>
 &lt;p>Both definitions have been inlined into our issue template that &lt;a href="https://issues.redhat.com/browse/MTSRE-61?jql=sprint%20%3D%2025038">live in a separate &amp;rsquo;eversprint&amp;rsquo;&lt;/a>&lt;/p>
-&lt;p>This is our jira project: &lt;a href="https://issues.redhat.com/secure/RapidBoard.jspa?rapidView=8694&amp;amp;projectKey=MTSRE&amp;amp;view=planning">https://issues.redhat.com/secure/RapidBoard.jspa?rapidView=8694&amp;amp;projectKey=MTSRE&amp;amp;view=planning&lt;/a>&lt;/p></description></item><item><title>Docs: APIs</title><link>/docs/addons-flow/apis/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/addons-flow/apis/</guid><description>
+&lt;p>This is our jira project: &lt;a href="https://issues.redhat.com/secure/RapidBoard.jspa?rapidView=8694&amp;amp;projectKey=MTSRE&amp;amp;view=planning">https://issues.redhat.com/secure/RapidBoard.jspa?rapidView=8694&amp;amp;projectKey=MTSRE&amp;amp;view=planning&lt;/a>&lt;/p></description></item><item><title>Docs: Adding ADO alerts</title><link>/docs/internal-documentation/tutorials/adding_ado_alerts/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/tutorials/adding_ado_alerts/</guid><description>
+&lt;p>This guide describes how to add alerts for addon-operator in the OSD RHOBS tenant.&lt;/p>
+&lt;h2 id="background">Background&lt;/h2>
+&lt;p>Since the addon-operator doesn’t have a specific tenant in RHOBS with a service account,
+the addon-operator metrics are scraped to the OSD tenant with its own service account,
+so instead of adding rules using &lt;a href="https://github.com/observatorium/obsctl">obsctl cli&lt;/a> and
+syncing them using &lt;a href="https://github.com/rhobs/obsctl-reloader">obsctl-reloader&lt;/a>
+SRE-P has a repo called &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards">rhobs-rules-and-dashboards&lt;/a>
+which, based on the tenant, will automatically sync rules defined in the repo to app-interface.&lt;/p>
+&lt;h2 id="overview">Overview&lt;/h2>
+&lt;p>We need to have the following prerequisites:&lt;/p>
+&lt;p>If the tenant is not defined in the repo, we need to follow the process defined
+&lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/rules#registering-a-new-tenant">here&lt;/a>
+which explains how to register the tenant in app-interface and how to configure obsctl-reloader
+to sync rules for the particular tenant.&lt;/p>
+&lt;p>The OSD tenant is already registered and the obsctl-reloader configuration is already
+defined &lt;a href="https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/rhobs/observatorium-mst/cicd/saas.yaml#L127">here&lt;/a>
+(we should see osd in &lt;strong>MANAGED_TENANTS&lt;/strong> parameter in the &lt;strong>observatorium-mst-common&lt;/strong> named
+item and secrets are defined &lt;a href="https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/data/services/rhobs/observatorium-mst/namespaces/app-sre-stage-01/observatorium-mst-stage.yml#L79">here&lt;/a>)&lt;/p>
+&lt;h2 id="steps">Steps&lt;/h2>
+&lt;p>we can define rules for the addon-operator metrics in the &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards">rhobs-rules-and-dashboards&lt;/a>
+repo in the &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/rules/osd">rules/osd&lt;/a>
+folder (the tenants are added as individual folders) and tests for the prometheus rules are
+defined in the &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/test/rules/osd">tests/rules/osd&lt;/a>
+folder.
+The suggested file naming conventions are described &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/tree/main/rules#one-folder-per-targeted-rhobs-tenant">here&lt;/a>.&lt;/p>
+&lt;p>tldr: create file name with &lt;code>.prometheusrule.yaml&lt;/code> as a suffix,
+add tenant label to the &lt;code>PrometheusRule&lt;/code> object.&lt;/p>
+&lt;h3 id="adding-promrules">Adding promrules&lt;/h3>
+&lt;p>For creating a PoC alert we have selected the &lt;code>addon_operator_addon_health_info&lt;/code> metric
+since it basically explains the addon health for a particular &lt;code>version&lt;/code> and &lt;code>cluster_id&lt;/code>.
+The metrics for creating alerts can be decided and the promql queries
+can be tested out from &lt;a href="https://promlens.stage.devshift.net">promlens stage&lt;/a>
+or &lt;a href="https://promlens.devshift.net">promlens prod&lt;/a>.
+The metrics are scraped from addon-operator to the
+observatorium-mst-stage (stage) / observatorium-mst-prod (prod) datasources.&lt;/p>
+&lt;p>Sample &lt;code>addon_operator_addon_health_info&lt;/code> metric data:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#000">addon_operator_addon_health_info{_id=&amp;#34;08d94ae0-a943-47ea-ac29-6cf65284aeba&amp;#34;, container=&amp;#34;metrics-relay-server&amp;#34;, endpoint=&amp;#34;https&amp;#34;, instance=&amp;#34;10.129.2.11:8443&amp;#34;, job=&amp;#34;addon-operator-metrics&amp;#34;, name=&amp;#34;managed-odh&amp;#34;, namespace=&amp;#34;openshift-addon-operator&amp;#34;, pod=&amp;#34;addon-operator-manager-7c9df45684-86mh4&amp;#34;, prometheus=&amp;#34;openshift-monitoring/k8s&amp;#34;, receive=&amp;#34;true&amp;#34;, service=&amp;#34;addon-operator-metrics&amp;#34;, tenant_id=&amp;#34;770c1124-6ae8-4324-a9d4-9ce08590094b&amp;#34;, version=&amp;#34;0.0.0&amp;#34;}&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This particular metric gives information about
+&lt;code>version&lt;/code>, &lt;code>cluster_id (_id)&lt;/code> and &lt;code>addon_name (name)&lt;/code> which can be used to create the alert.&lt;/p>
+&lt;ul>
+&lt;li>We should ignore the metrics with version &lt;code>&amp;quot;0.0.0&amp;quot;&lt;/code>&lt;/li>
+&lt;li>The addon health is &lt;code>&amp;quot;Unhealthy&amp;quot;&lt;/code> if no version exists for the particular
+addon with &lt;a href="https://github.com/openshift/addon-operator#monitoring-and-metrics">value 1&lt;/a>&lt;/li>
+&lt;li>In theory, the latest version for the particular addon
+should have the value of 1. If not, then the addon is &lt;code>&amp;quot;Unhealthy&amp;quot;&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>The prometheus rule for the addon_operator_addon_health_info metric is defined &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/blob/main/rules/osd/addon-operator-addon-health-info-rules.prometheusrule.yaml">here&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#204a87;font-weight:bold">expr&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline"> &lt;/span>&lt;span style="color:#000">(count by (name, _id) (addon_operator_addon_health_info{version!=&amp;#34;0.0.0&amp;#34;})) - (count by (name,_id) (addon_operator_addon_health_info{version!=&amp;#34;0.0.0&amp;#34;} == 0)) == 0&lt;/span>&lt;span style="color:#f8f8f8;text-decoration:underline">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Explanation:&lt;/p>
+&lt;p>We aggregate all metrics on &lt;code>name&lt;/code> and &lt;code>_id&lt;/code> and count the non-0 value metrics.
+If the count is 0 (implying there has been no non-0 value metrics), raise the alert.&lt;/p>
+&lt;h3 id="writing-tests-for-the-promrules">Writing tests for the promrules&lt;/h3>
+&lt;p>First create a &lt;code>&amp;lt;alertname&amp;gt;.promrulestests.yaml&lt;/code> file in the test/rules/&lt;tenant>/ folder,
+It is advised to test out different scenarios for the edge cases so
+that the expr defined in the rules/&lt;tenant> folder will raise alert if say the addon is &lt;code>&amp;quot;Unhealthy&amp;quot;&lt;/code>.
+Try out different scenarios by defining different series as
+input to the test rules such as &lt;a href="https://gitlab.cee.redhat.com/service/rhobs-rules-and-dashboards/-/blob/main/test/rules/osd/addon-operator-addon-health-info-rules.prometheusrulestests.yaml#L8">here&lt;/a>.&lt;/p>
+&lt;p>The tests can be validated by running: &lt;code>make test-rules&lt;/code>
+in the rhobs-rules-and-dashboards directory.
+NOTE: Make sure that the tests are defined in the tests/rules/&lt;tenant> folder&lt;/p>
+&lt;p>Since the pagerduty config is defined on a per tenant basis which is &lt;code>osd tenant&lt;/code> in this case,
+the alert will be triggered and paged to SRE-P,
+so a proper runbook should be added redirecting the alert to lp-sre folks.&lt;/p>
+&lt;p>The runbook links/ SOP links can be validated by running: &lt;code>make check-runbooks&lt;/code>&lt;/p></description></item><item><title>Docs: APIs</title><link>/docs/addons-flow/apis/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/addons-flow/apis/</guid><description>
 &lt;p>You can find the Addons APIs &lt;a href="https://api.openshift.com/#/default">here&lt;/a> under
 the paths &lt;code>/api/clusters_mgmt/v1/addons/{addon_id}&lt;/code>,
 &lt;code>/api/clusters_mgmt/v1/clusters/{cluster_id}/addon_inquiries&lt;/code> and
