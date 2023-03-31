@@ -3,24 +3,36 @@ title: Installing a specific version of an Addon in a staging environment
 linkTitle: Installing a specific version of an Addon in a staging environment
 ---
 
-Add-on services are typically installed using the OpenShift Cluster Manager web console, by selecting the specific addon from the **Add-ons** tab and clicking **Install**.
-However, only the latest version of an addon service can be installed using the OpenShift Cluster Manager console.
+Add-on services are typically installed using the OpenShift Cluster Manager
+web console, by selecting the specific addon from the **Add-ons** tab and
+clicking **Install**.
+However, only the latest version of an addon service can be installed using
+the OpenShift Cluster Manager console.
 
-In some cases, you might need to install an older version of an addon, for example, to test the upgrade of an add-on from one version to the next.
-Follow this procedure to install a specific version of an addon service in a staging environment.
+In some cases, you might need to install an older version of an addon, for
+example, to test the upgrade of an add-on from one version to the next.
+Follow this procedure to install a specific version of an addon service in a
+staging environment.
 
 **IMPORTANT:**
-Installing an addon service using this procedure is only recommended for testing upgrades in a staging environment and is not supported for customer-facing production workloads.
+Installing an addon service using this procedure is only recommended for testing
+ upgrades in a staging environment and is not supported for customer-facing
+ production workloads.
 
 ## Prerequisites
 
-* You have the `version_select` capability added to your organization by creating a merge request to the [_ocm-resources respository_](https://gitlab.cee.redhat.com/service/ocm-resources).
+* You have the `version_select` capability added to your organization by
+creating a merge request to the [_ocm-resources respository_](https://gitlab.cee.redhat.com/service/ocm-resources).
 
-    For more information about enabling the `version_select` capability, see [_organization YAML example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/commit/35198592011391d4c296ff75d70a93a454104467) and [_merge request example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/merge_requests/3271).
+    For more information about enabling the `version_select` capability,
+    see [_organization YAML example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/commit/35198592011391d4c296ff75d70a93a454104467)
+    and [_merge request example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/merge_requests/3271).
 
 ## Procedure
 
-1. Create a JSON file with the addon service and addon version that you want to install. In this example, the JSON file is `install-payload.json`, the addon id is `reference-addon`, and the version we want to install is `0.6.7`.
+1. Create a JSON file with the addon service and addon version that you want
+to install. In this example, the JSON file is `install-payload.json`, the
+addon id is `reference-addon`, and the version we want to install is `0.6.7`.
 
     **Example**
 
@@ -110,9 +122,12 @@ Installing an addon service using this procedure is only recommended for testing
          phase: Ready
          ```
 
-         In this example, you can see the addon version is set to `0.6.7` and `AddonInstalled` status is `True`.
+         In this example, you can see the addon version is set to `0.6.7`
+         and `AddonInstalled` status is `True`.
 
-5. If you do not want the addon service to automatically upgrade to the latest version after installation, delete the addon upgrade policy after installation is complete.
+5. If you do not want the addon service to automatically upgrade to the
+latest version after installation, delete the addon upgrade policy after
+installation is complete.
 
     1. List the upgrade policies:
 
@@ -198,7 +213,8 @@ Installing an addon service using this procedure is only recommended for testing
         }
         ```
 
-        In the example above, the schedule_type for the `reference-addon` is set to `manual` and the version to upgrade to is set `0.7.0`.
+        In the example above, the schedule_type for the `reference-addon` is
+        set to `manual` and the version to upgrade to is set `0.7.0`.
     1. Run the following API request to install the addon service:
 
         **Syntax**
