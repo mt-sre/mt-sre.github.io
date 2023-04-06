@@ -10,7 +10,7 @@ However, only the latest version of an addon service can be installed using
 the OpenShift Cluster Manager console.
 
 In some cases, you might need to install an older version of an addon, for
-example, to test the upgrade of an add-on from one version to the next.
+example, to test the upgrade of an addon from one version to the next.
 Follow this procedure to install a specific version of an addon service in a
 staging environment.
 
@@ -24,6 +24,8 @@ Installing an addon service using this procedure is only recommended for testing
 * You have the `version_select` capability added to your organization by
 creating a merge request to the [_ocm-resources respository_](https://gitlab.cee.redhat.com/service/ocm-resources).
 
+    For more information about assigning capabilities to an organization,
+    see [_Customer Capabilities Management_](https://source.redhat.com/groups/public/openshiftplatformsre/blog/customer_capabilities_management).
     For more information about enabling the `version_select` capability,
     see [_organization YAML example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/commit/35198592011391d4c296ff75d70a93a454104467)
     and [_merge request example_](https://gitlab.cee.redhat.com/service/ocm-resources/-/merge_requests/3271).
@@ -47,13 +49,38 @@ addon id is `reference-addon`, and the version we want to install is `0.6.7`.
    }
     ```
 
+    **NOTE:** If the addon that you are installing has a required parameter, ensure
+     that you add it to the JSON file. For instance, the `managed-odh` addon,
+     which is shown in the example below, requires the parameter `notification-email`
+     to be included.
+
+    **Example**
+
+    ```JSON
+    {
+      "addon": {
+        "id": "managed-odh"
+    },
+      "addon_version": {
+        "id": "1.23.0"
+    },
+      "parameters": {
+            "items": [
+            {
+              "id": "notification-email",
+              "value": "me@somewhere.com"
+            }
+          ]
+        }
+    }
+
 2. Set the `CLUSTER_ID` environment variable:
 
     ```bash
     export CLUSTER_ID=<your_cluster_internal_id>
     ```
 
-3. Run the following API request to install the addon service:
+3. Run the following API request to install the addon:
 
     ```bash
     ocm post /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/addons --body install-payload.json
@@ -82,52 +109,9 @@ addon id is `reference-addon`, and the version we want to install is `0.6.7`.
         reference-addon      Ready     32m
         ```
 
-    4. Review the addon service installation status and version:
-
-        **Example**
-
-        ```yaml
-        $ oc get addons reference-addon -o yaml
-       apiVersion: addons.managed.openshift.io/v1alpha1
-       kind: Addon
-       metadata:
-         annotations:
-         ...
-         creationTimestamp: "2023-03-20T19:07:08Z"
-         finalizers:
-         - addons.managed.openshift.io/cache
-         ...
-       spec:
-         displayName: Reference Addon
-         ...
-         pause: false
-         version: 0.6.7
-       status:
-         conditions:
-         - lastTransitionTime: "2023-03-20T19:08:10Z"
-           message: ""
-           observedGeneration: 2
-           reason: FullyReconciled
-           status: "True"
-           type: Available
-         - lastTransitionTime: "2023-03-20T19:08:10Z"
-           message: Addon has been successfully installed.
-           observedGeneration: 2
-           reason: AddonInstalled
-           status: "True"
-           type: Installed
-         lastObservedAvailableCSV: redhat-reference-addon/reference-addon.v0.6.7
-         observedGeneration: 2
-         observedVersion: 0.6.7
-         phase: Ready
-         ```
-
-         In this example, you can see the addon version is set to `0.6.7`
-         and `AddonInstalled` status is `True`.
-
-5. If you do not want the addon service to automatically upgrade to the
-latest version after installation, delete the addon upgrade policy after
-installation is complete.
+5. If you do not want the addon to automatically upgrade to the
+latest version after installation, delete the addon upgrade policy before the
+addon installation completes.
 
     1. List the upgrade policies:
 
@@ -185,7 +169,50 @@ installation is complete.
         ocm get /api/clusters_mgmt/v1/clusters/$CLUSTER_ID/addon_upgrade_policies | grep 991a69a5-ce33-11ed-9dda-0a580a8308f5
         ```
 
-6. (Optional) If needed, recreate the addon upgrade policy manually.
+6. Review the addon installation status and version:
+
+    **Example**
+
+    ```yaml
+    $ oc get addons reference-addon -o yaml
+    apiVersion: addons.managed.openshift.io/v1alpha1
+    kind: Addon
+    metadata:
+      annotations:
+     ...
+     creationTimestamp: "2023-03-20T19:07:08Z"
+     finalizers:
+     - addons.managed.openshift.io/cache
+     ...
+    spec:
+    displayName: Reference Addon
+     ...
+     pause: false
+     version: 0.6.7
+    status:
+      conditions:
+      - lastTransitionTime: "2023-03-20T19:08:10Z"
+        message: ""
+        observedGeneration: 2
+        reason: FullyReconciled
+        status: "True"
+        type: Available
+      - lastTransitionTime: "2023-03-20T19:08:10Z"
+        message: Addon has been successfully installed.
+        observedGeneration: 2
+        reason: AddonInstalled
+        status: "True"
+        type: Installed
+     lastObservedAvailableCSV: redhat-reference-addon/reference-addon.v0.6.7
+     observedGeneration: 2
+     observedVersion: 0.6.7
+     phase: Ready
+    ```
+
+    In this example, you can see the addon version is set to `0.6.7`
+    and `AddonInstalled` status is `True`.
+
+7. (Optional) If needed, recreate the addon upgrade policy manually.
     1. Create a JSON file with the addon upgrade policy information.
 
         **Example of automatic upgrade**
@@ -214,8 +241,10 @@ installation is complete.
         ```
 
         In the example above, the schedule_type for the `reference-addon` is
-        set to `manual` and the version to upgrade to is set `0.7.0`.
-    1. Run the following API request to install the addon service:
+        set to `manual` and the version to upgrade to is set `0.7.0`. The upgrade
+        policy will execute once and the addon will upgrade to version `0.7.0`.
+
+    1. Run the following API request to install the addon upgrade policy:
 
         **Syntax**
 
