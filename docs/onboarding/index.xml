@@ -73,5 +73,8 @@ team.&lt;/p>
 &lt;li>An Addon SRE reviews the SLOs and SOPs.&lt;/li>
 &lt;li>If the SLOs are met, the service will be transitioned to Addon SRE.&lt;/li>
 &lt;li>Any critical alerts will be routed to the Addon SRE 24x7 PagerDuty escalation policy.&lt;/li>
-&lt;/ul></description></item><item><title>Docs: Soak Test</title><link>/docs/onboarding/soak-test/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/soak-test/</guid><description>
+&lt;/ul>
+&lt;h2 id="further-links">Further Links&lt;/h2>
+&lt;p>For information on how to set up the PagerDuty integration for your addon,
+see the &lt;a href="../creating-addons/monitoring/pagerduty_integration.md">PagerDuty Integration&lt;/a> documentation.&lt;/p></description></item><item><title>Docs: Soak Test</title><link>/docs/onboarding/soak-test/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/soak-test/</guid><description>
 &lt;p>WIP&lt;/p></description></item></channel></rss>
