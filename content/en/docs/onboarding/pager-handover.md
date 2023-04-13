@@ -18,3 +18,8 @@ team.
 - An Addon SRE reviews the SLOs and SOPs.
 - If the SLOs are met, the service will be transitioned to Addon SRE.
 - Any critical alerts will be routed to the Addon SRE 24x7 PagerDuty escalation policy.
+
+## Further Links
+
+For information on how to set up the PagerDuty integration for your addon,
+see the [PagerDuty Integration](../creating-addons/monitoring/pagerduty_integration.md) documentation.

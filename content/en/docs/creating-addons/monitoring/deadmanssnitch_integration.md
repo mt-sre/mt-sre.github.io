@@ -1,17 +1,16 @@
 ---
 title: "Dead Man's Snitch Operator Integration"
 linkTitle: "Dead Man's Snitch"
-date: 2022-12-15T00:53:51+01:00
 ---
 
 ## Overview
 
 [Dead Man's Snitch (DMS)](https://deadmanssnitch.com/) is essentially a constantly firing
-prometheus alert and an external receiver(called a snitch) that will alert should the
-monitoring stack go down and stop sending alerts. The generation of "snitch" urls is
-dynamic on cluster/add-on installed. It's done via the
+prometheus alert and an external receiver (called a snitch) that will alert should the
+monitoring stack go down and stop sending alerts. The generation of the snitch URLs is
+done dynamically via the
 [DMS operator](https://github.com/openshift/deadmanssnitch-operator),
-which runs on hive and is owned by SREP.
+which runs on hive and is owned by SREP. The snitch URL shows up in a [secret](#generated-secret).
 
 ## Usage
 
