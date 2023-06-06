@@ -26,3 +26,4 @@ repos:
     hooks:
       - id: markdown-link-check
         args: [ '-c .link-check-config.json' ]
+        exclude: ^themes/
