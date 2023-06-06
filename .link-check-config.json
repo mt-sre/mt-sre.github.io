@@ -1,0 +1,16 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^content.*$"
+    },
+    {
+      "pattern": "^\/.*$"
+    },
+    {
+      "pattern": "^https://source.redhat.com"
+    },
+    {
+      "pattern": "^https://rover.redhat.com"
+    }
+  ]
+}
