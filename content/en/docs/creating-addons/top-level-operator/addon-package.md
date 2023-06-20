@@ -1,6 +1,6 @@
 ---
-title: Addon Package
-linkTitle: Addon Package
+title:  Plug and Play Addon
+linkTitle: Plug and Play Addon
 ---
 
 ## Feature Flag
