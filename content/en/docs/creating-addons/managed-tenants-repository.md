@@ -29,8 +29,8 @@ addons/ocs-converged
 
 ### addon imagesets
 
-Our tooling now supports creating imagesets for addons. Imageset of a new version of
-an addon sits inside a new directory called `addonimagesets/<environment>`. CPaaS/Tenants will need to create
+Our tooling now supports creating imagesets for addons. The imageset of a new version of
+an addon, which sits inside a new directory called `addonimagesets/<environment>`. CPaaS/Tenants will need to create
 a merge request in <https://gitlab.cee.redhat.com/service/managed-tenants/> in order to notify
 MT-SRE of the availability of the new release. Each new addon version is a new file under the
 earlier mentioned `addonimagesets/<environment>` directory.
