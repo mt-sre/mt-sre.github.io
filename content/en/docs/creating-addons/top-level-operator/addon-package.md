@@ -3,13 +3,6 @@ title:  Plug and Play Addon
 linkTitle: Plug and Play Addon
 ---
 
-## Feature Flag
-
-Currently, the addons plug and play functionality is hidden behind a feature flag. Feature flags are specified in
-the `AddonOperator` resources under `.spec.featureflags`. This field is a string which is a comma separated
-list of feature flags to enable. For addons plug and play and thus the addon package to be enabled, the string
-`ADDONS_PLUG_AND_PLAY` has to be included in this field.
-
 ## Package
 
 For each addon that has `packageOperator` defined in its `spec`, a
