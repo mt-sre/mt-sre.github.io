@@ -1,4 +1,4 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Layered Products SRE – Documentation</title><link>/docs/</link><description>Recent content in Documentation on Layered Products SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Introduction</title><link>/docs/onboarding/introduction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/introduction/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Layered Products SRE – Documentation</title><link>/docs/</link><description>Recent content in Documentation on Layered Products SRE</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Introduction</title><link>/docs/onboarding/introduction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/onboarding/introduction/</guid><description>
 &lt;p>The Repeatable Onboarding for Managed Services (ROMS) article on &lt;a href="https://source.redhat.com/communities/communities_of_practice/cross_cutting_co/cloud_services_cop/wiki/draft_how_to_get_started_with_roms_repeatable_onboarding_for_managed_services">source&lt;/a>
 has a great introduction to managed services.&lt;/p>
 &lt;p>There are multiple steps to onboard a managed service:&lt;/p>
@@ -823,7 +823,11 @@ before going live with the SRE team.&lt;/p>
 &lt;li>&lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/09cf5112e7dc5588c14f158d6490f7f1e7051c6a/addons/managed-api-service-internal/metadata/production/addon.yaml#L40">RHOAM addon: extraResources&lt;/a>
 field in &lt;code>addon.yaml&lt;/code>&lt;/li>
 &lt;li>&lt;a href="https://github.com/red-hat-data-services/odh-deployer/blob/cb48c55725fd32fdc89a5ff29517b3f4cc0d1f54/monitoring/prometheus/prometheus.yaml">RHODS addon: alertmanager configuration&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Docs: Interrupt Catcher</title><link>/docs/internal-documentation/ic/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/ic/</guid><description>
+&lt;/ul></description></item><item><title>Docs: Feature Flags in ADO</title><link>/docs/internal-documentation/feature-flags/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/feature-flags/</guid><description>
+&lt;p>Currently, some ADO functionality, for example, addons plug and play, is hidden behind a feature flag.
+Feature flags are specified in the &lt;code>AddonOperator&lt;/code> resources under &lt;code>.spec.featureflags&lt;/code>. This field is a string
+which is a comma separated list of feature flags to enable. For addons plug and play and thus the addon package
+to be enabled, the string &lt;code>ADDONS_PLUG_AND_PLAY&lt;/code> has to be included in this field.&lt;/p></description></item><item><title>Docs: Interrupt Catcher</title><link>/docs/internal-documentation/ic/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/ic/</guid><description>
 &lt;p>The Interrupt Catcher is the entry-point for any tenant to get help,
 ask questions and raise issues. It&amp;rsquo;s our interface with our Tenants.&lt;/p>
 &lt;p>The MT-SRE Team member with the Interrupt Catcher responsibility can
@@ -1173,7 +1177,41 @@ by cluster id, for example &lt;code>csv_succeeded{_id=&amp;quot;049ea229-55dd-4e
 &lt;a href="https://github.com/mt-sre/managed-tenants-cli/blob/main/docs/tenants/zz_metadata_schema_generated.md">addon.yaml metadata file&lt;/a>.
 Given this configuration, a secret with the specified name is created in the
 specified namespace by the &lt;a href="https://github.com/openshift/pagerduty-operator">PagerDuty Operator&lt;/a>,
-which runs on Hive. The secret contains the &lt;code>PAGERDUTY_KEY&lt;/code>.&lt;/p></description></item><item><title>Docs: Run Hive Locally</title><link>/docs/internal-documentation/tutorials/run_hive_locally/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/tutorials/run_hive_locally/</guid><description>
+which runs on Hive. The secret contains the &lt;code>PAGERDUTY_KEY&lt;/code>.&lt;/p></description></item><item><title>Docs: Plug and Play Addon</title><link>/docs/creating-addons/top-level-operator/addon-package/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/creating-addons/top-level-operator/addon-package/</guid><description>
+&lt;h2 id="package">Package&lt;/h2>
+&lt;p>For each addon that has &lt;code>packageOperator&lt;/code> defined in its &lt;code>spec&lt;/code>, a
+ClusterObjectTemplate[https://package-operator.run/docs/getting_started/api-reference/#clusterobjecttemplate].
+The average user does not need to interact with the &lt;code>ClusterObjectTemplate&lt;/code>; they will interact with the resultant
+ClusterPackage[https://package-operator.run/docs/getting_started/api-reference/#clusterpackage] that is created.&lt;/p>
+&lt;p>The &lt;code>ClusterPackage&lt;/code> manifest will look like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>apiVersion: package-operator.run/v1alpha1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kind: ClusterPackage
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>metadata:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: &amp;lt;addon_name&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>spec:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> image: &amp;lt;addon.spec.packageOperator&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> addonsv1:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clusterID: a440b136-b2d6-406b-a884-fca2d62cd170
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deadMansSnitchUrl: https://example.com/test-snitch-url
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ocmClusterID: abc123
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ocmClusterName: asdf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pagerDutyKey: 1234567890ABCDEF
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> parameters:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo1: bar
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo2: baz
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> targetNamespace: pko-test-ns-00-req-apy-dsy-pdy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>deadMansSnitchUrl&lt;/code> and the &lt;code>pagerDutyKey&lt;/code> come from the &lt;code>configMap&lt;/code>s with the default names in the default
+locations
+documented in
+the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/deadmanssnitch_integration/">addons deadMansSnitch&lt;/a>
+and
+the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/pagerduty_integration/">addons pagerDuty documentation&lt;/a>
+respectively. &lt;em>To have these values inject you must maintain the default naming scheme and location of these configMaps&lt;/em>
+.&lt;/p>
+&lt;p>All the values in &lt;code>.spec.config.addonsv1&lt;/code> can be injected into the objects contained in your packageImage. See the
+&lt;a href="https://package-operator.run/docs/guides/packaging-an-application/#go-templates">package operator documentation&lt;/a> to see
+how to do this.&lt;/p></description></item><item><title>Docs: Run Hive Locally</title><link>/docs/internal-documentation/tutorials/run_hive_locally/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/internal-documentation/tutorials/run_hive_locally/</guid><description>
 &lt;p>This guide describes how to deploy a Hive environment in your local machine
 using &lt;a href="https://kind.sigs.k8s.io/">kind&lt;/a>.&lt;/p>
 &lt;p>For the managed clusters, this guide covers both

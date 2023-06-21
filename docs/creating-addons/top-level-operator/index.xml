@@ -1,4 +1,4 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Layered Products SRE – Top Level Operator</title><link>/docs/creating-addons/top-level-operator/</link><description>Recent content in Top Level Operator on Layered Products SRE</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/creating-addons/top-level-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Customer Notifications</title><link>/docs/creating-addons/top-level-operator/customer-notifications/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/top-level-operator/customer-notifications/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Layered Products SRE – Top Level Operator</title><link>/docs/creating-addons/top-level-operator/</link><description>Recent content in Top Level Operator on Layered Products SRE</description><generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="/docs/creating-addons/top-level-operator/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Customer Notifications</title><link>/docs/creating-addons/top-level-operator/customer-notifications/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/top-level-operator/customer-notifications/</guid><description>
 &lt;h2 id="status-page">Status Page&lt;/h2>
 &lt;p>&lt;a href="https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/app-sre/statuspage.md">https://gitlab.cee.redhat.com/service/app-interface/-/blob/master/docs/app-sre/statuspage.md&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://service.pages.redhat.com/dev-guidelines/docs/appsre/advanced/statuspage/">https://service.pages.redhat.com/dev-guidelines/docs/appsre/advanced/statuspage/&lt;/a>&lt;/p>
@@ -84,4 +84,38 @@ to deploy to an additional add-on (like edge or internal). Today we don&amp;rsqu
 this practice due to the need to clone all add-on metadata which increases the
 risk for incorrect metadata going to production/customer clusters.&lt;/p>
 &lt;p>If you need to do the above, please reach out to your assigned SRE team for
-guidance first.&lt;/p></description></item></channel></rss>
+guidance first.&lt;/p></description></item><item><title>Docs: Plug and Play Addon</title><link>/docs/creating-addons/top-level-operator/addon-package/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/creating-addons/top-level-operator/addon-package/</guid><description>
+&lt;h2 id="package">Package&lt;/h2>
+&lt;p>For each addon that has &lt;code>packageOperator&lt;/code> defined in its &lt;code>spec&lt;/code>, a
+ClusterObjectTemplate[https://package-operator.run/docs/getting_started/api-reference/#clusterobjecttemplate].
+The average user does not need to interact with the &lt;code>ClusterObjectTemplate&lt;/code>; they will interact with the resultant
+ClusterPackage[https://package-operator.run/docs/getting_started/api-reference/#clusterpackage] that is created.&lt;/p>
+&lt;p>The &lt;code>ClusterPackage&lt;/code> manifest will look like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>apiVersion: package-operator.run/v1alpha1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kind: ClusterPackage
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>metadata:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: &amp;lt;addon_name&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>spec:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> image: &amp;lt;addon.spec.packageOperator&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> addonsv1:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clusterID: a440b136-b2d6-406b-a884-fca2d62cd170
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deadMansSnitchUrl: https://example.com/test-snitch-url
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ocmClusterID: abc123
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ocmClusterName: asdf
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pagerDutyKey: 1234567890ABCDEF
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> parameters:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo1: bar
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo2: baz
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> targetNamespace: pko-test-ns-00-req-apy-dsy-pdy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>deadMansSnitchUrl&lt;/code> and the &lt;code>pagerDutyKey&lt;/code> come from the &lt;code>configMap&lt;/code>s with the default names in the default
+locations
+documented in
+the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/deadmanssnitch_integration/">addons deadMansSnitch&lt;/a>
+and
+the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/pagerduty_integration/">addons pagerDuty documentation&lt;/a>
+respectively. &lt;em>To have these values inject you must maintain the default naming scheme and location of these configMaps&lt;/em>
+.&lt;/p>
+&lt;p>All the values in &lt;code>.spec.config.addonsv1&lt;/code> can be injected into the objects contained in your packageImage. See the
+&lt;a href="https://package-operator.run/docs/guides/packaging-an-application/#go-templates">package operator documentation&lt;/a> to see
+how to do this.&lt;/p></description></item></channel></rss>
