@@ -1,0 +1,40 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^content.*$"
+    },
+    {
+      "pattern": "^\/.*$"
+    },
+    {
+      "pattern": "^https://source.redhat.com"
+    },
+    {
+      "pattern": "^https://rover.redhat.com"
+    },
+    {
+      "pattern": "^https://gitlab.cee.redhat.com"
+    },
+    {
+      "pattern": "^https://grafana.stage.devshift.net"
+    },
+    {
+      "pattern": "^https://service.pages.redhat.com"
+    },
+    {
+      "pattern": "^https://post-office.corp.redhat.com"
+    },
+    {
+      "pattern": "^https://promlens."
+    },
+    {
+      "pattern": "^https://infogw-proxy.api."
+    },
+    {
+      "pattern": "^https://cpaas."
+    },
+    {
+      "pattern": "^https://grafana.app-sre."
+    }
+  ]
+}
