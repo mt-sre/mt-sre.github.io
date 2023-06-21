@@ -32,6 +32,9 @@
     },
     {
       "pattern": "^https://cpaas."
+    },
+    {
+      "pattern": "^https://grafana.app-sre."
     }
   ]
 }
