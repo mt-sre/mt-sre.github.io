@@ -28,7 +28,6 @@ happens right before the planning meeting for the next sprint:
   * and adapt it if necessary
   * in small steps and an iterative fashion
   * incorporate eventual process changes in the next sprint
-* [Guide that @jgwosdz used for our first retro](https://www.notion.so/First-Retro-8cb1180cda1f4b03879065e225392b50)
 * Our retro dashboard with retros and derived action items: <https://action.parabol.co/team/3heARr2dbz>
 
 ## Sprint Review
