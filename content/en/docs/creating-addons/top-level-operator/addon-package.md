@@ -47,12 +47,11 @@ how to do this.
 
 ## Tenants Onboarding Steps 
 
-Team's can generate the packageImage themselves using the [package operator documentation](https://package-operator.run/docs/guides/packaging-an-application/#build--validate) or Team can use Managed Tenants Bundles (MTB) facilities. 
+Team's can generate the packageImage themselves using the [package operator documentation](https://package-operator.run/docs/guides/packaging-an-application/#build--validate) or Team's can use Managed Tenants Bundles (MTB) facilities. 
 
+Below are the Steps for generating the packageImage using MTB for reference-addon packageImage : 
 
-For the reference-addon packageImage, we are using MTB.
-
-In MTB, Teams just have to create a "package" directory:
+In MTB, a Team just have to create a "package" directory:
 https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon/package and add the manifests there, alongside the manifests.yaml[PackageManifest] .
 
 MTB CI will create the packageImage (in addition to the OLM Index Image which are also part of the Team's addon folder https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon ) .
