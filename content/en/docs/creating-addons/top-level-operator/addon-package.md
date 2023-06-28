@@ -47,16 +47,16 @@ how to do this.
 
 ## Tenants Onboarding Steps 
 
-Teams can generate the packageImage themselves using the [package operator documentation](https://package-operator.run/docs/guides/packaging-an-application/#build--validate) or teams can use Managed Tenants Bundles (MTB) facilities. 
+Teams can generate the packageImage themselves using the [package operator documentation](https://package-operator.run/docs/guides/packaging-an-application/#build--validate) although we recommend teams to use Managed Tenants Bundles (MTB) facilities. 
 
-Below are the Steps for generating the packageImage using MTB for reference-addon packageImage: 
+Below are the Steps for generating the packageImage using MTB flow for reference-addon packageImage: 
 
 In MTB, a team just has to create a "package" directory:
 https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon/package and add the manifests there, alongside the manifests.yaml[PackageManifest] .
 
 MTB CI will create the packageImage (in addition to the OLM Index Image which is also part of the Team's addon folder https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon) .
 
-The last step for the team is to raise a MR to [managed-tenants repository](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/main/addons/reference-addon/addonimagesets/stage/reference-addon.v0.10.1.yaml#L24) , adding a new AddonImageSet with those images.
+Then MTB CI raises a MR to [managed-tenants repository](https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/main/addons/reference-addon/addonimagesets/stage/reference-addon.v0.10.1.yaml#L24) , adding a new AddonImageSet with those images.
 
 
 
