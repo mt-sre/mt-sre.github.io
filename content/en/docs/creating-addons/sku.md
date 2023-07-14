@@ -6,7 +6,7 @@ description: >
 ---
 
 **NOTE** MT-SRE do not influence SKU creation/priorities.
-You must work with SDB directly for this.
+You must work with OCM directly for this.
 
 ## Requesting a SKU
 
@@ -15,7 +15,7 @@ To request a SKU, please complete the following steps:
 * Determine a unique quota ID for the addon. This should be
   lowercase with dashes and of the format `addon-<addon-name>`. For example:
   `addon-prow-operator`
-* Create a JIRA Request at [Service Dev Team B](https://issues.redhat.com/projects/SDB/)
+* Create a JIRA Request at [Openshift Cluster Manager](https://issues.redhat.com/projects/OCM/)
   with the subject `Request for new Add-On SKU in OCM` and the following information:
   * Add-On name.
   * Add-On owner.
@@ -30,7 +30,7 @@ To request a SKU, please complete the following steps:
 From time to time you may want to update some SKU fields like supported cloud providers,
 quota cost, product support, etc. To do this:
 
-* Create a JIRA Request at [Service Dev Team B](https://issues.redhat.com/projects/SDB/)
+* Create a JIRA Request at [Openshift Cluster Manager](https://issues.redhat.com/projects/OCM/)
 * Ping the ticket in #service-development-b Slack channel (@sd-b-team is the handle)
 * This requires an update to be committed in-code in AMS, then deployed to stage and
   eventually prod (allow up to 7 working days).
