@@ -302,14 +302,14 @@ be found in the
 &lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/main/docs/tenants/create_an_addon.md">create an addon&lt;/a>
 documentation page for a good starting point.&lt;/p></description></item><item><title>Docs: SKU</title><link>/docs/creating-addons/sku/</link><pubDate>Thu, 15 Dec 2022 00:53:51 +0100</pubDate><guid>/docs/creating-addons/sku/</guid><description>
 &lt;p>&lt;strong>NOTE&lt;/strong> MT-SRE do not influence SKU creation/priorities.
-You must work with SDB directly for this.&lt;/p>
+You must work with OCM directly for this.&lt;/p>
 &lt;h2 id="requesting-a-sku">Requesting a SKU&lt;/h2>
 &lt;p>To request a SKU, please complete the following steps:&lt;/p>
 &lt;ul>
 &lt;li>Determine a unique quota ID for the addon. This should be
 lowercase with dashes and of the format &lt;code>addon-&amp;lt;addon-name&amp;gt;&lt;/code>. For example:
 &lt;code>addon-prow-operator&lt;/code>&lt;/li>
-&lt;li>Create a JIRA Request at &lt;a href="https://issues.redhat.com/projects/SDB/">Service Dev Team B&lt;/a>
+&lt;li>Create a JIRA Request at &lt;a href="https://issues.redhat.com/projects/OCM/">Openshift Cluster Manager&lt;/a>
 with the subject &lt;code>Request for new Add-On SKU in OCM&lt;/code> and the following information:
 &lt;ul>
 &lt;li>Add-On name.&lt;/li>
@@ -326,7 +326,7 @@ is created. We expect to resolve these requests within 7 working days.&lt;/li>
 &lt;p>From time to time you may want to update some SKU fields like supported cloud providers,
 quota cost, product support, etc. To do this:&lt;/p>
 &lt;ul>
-&lt;li>Create a JIRA Request at &lt;a href="https://issues.redhat.com/projects/SDB/">Service Dev Team B&lt;/a>&lt;/li>
+&lt;li>Create a JIRA Request at &lt;a href="https://issues.redhat.com/projects/OCM/">Openshift Cluster Manager&lt;/a>&lt;/li>
 &lt;li>Ping the ticket in #service-development-b Slack channel (@sd-b-team is the handle)&lt;/li>
 &lt;li>This requires an update to be committed in-code in AMS, then deployed to stage and
 eventually prod (allow up to 7 working days).&lt;/li>
