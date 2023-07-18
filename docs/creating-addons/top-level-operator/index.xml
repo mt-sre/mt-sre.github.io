@@ -85,12 +85,18 @@ this practice due to the need to clone all add-on metadata which increases the
 risk for incorrect metadata going to production/customer clusters.&lt;/p>
 &lt;p>If you need to do the above, please reach out to your assigned SRE team for
 guidance first.&lt;/p></description></item><item><title>Docs: Plug and Play Addon</title><link>/docs/creating-addons/top-level-operator/addon-package/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/creating-addons/top-level-operator/addon-package/</guid><description>
-&lt;h2 id="package">Package&lt;/h2>
-&lt;p>For each addon that has &lt;code>packageOperator&lt;/code> defined in its &lt;code>spec&lt;/code>, a
-ClusterObjectTemplate[https://package-operator.run/docs/getting_started/api-reference/#clusterobjecttemplate].
-The average user does not need to interact with the &lt;code>ClusterObjectTemplate&lt;/code>; they will interact with the resultant
-ClusterPackage[https://package-operator.run/docs/getting_started/api-reference/#clusterpackage] that is created.&lt;/p>
-&lt;p>The &lt;code>ClusterPackage&lt;/code> manifest will look like this:&lt;/p>
+&lt;h2 id="package-operator">Package Operator&lt;/h2>
+&lt;p>Package Operator is a Kubernetes Operator for packaging and managing a collection of arbitrary Kubernetes objects.&lt;/p>
+&lt;p>Each addon with a &lt;code>packageOperator&lt;/code> defined in its &lt;code>spec&lt;/code> will have a corresponding
+&lt;a href="https://package-operator.run/docs/getting_started/api-reference/#clusterobjecttemplate">ClusterObjectTemplate&lt;/a>.
+The ClusterObjectTemplate is an API defined in Package
+Operator, enabling users to create an object by templating a
+manifest and injecting values retrieved from other arbitrary source objects.
+However, regular users typically do not need to interact with the &lt;code>ClusterObjectTemplate&lt;/code>.
+Instead, they can interact with the generated
+&lt;a href="https://package-operator.run/docs/getting_started/api-reference/#clusterpackage">ClusterPackage&lt;/a>
+manifest.&lt;/p>
+&lt;p>&lt;strong>Example of a &lt;code>ClusterPackage&lt;/code> manifest:&lt;/strong>&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>apiVersion: package-operator.run/v1alpha1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kind: ClusterPackage
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>metadata:
@@ -108,14 +114,43 @@ ClusterPackage[https://package-operator.run/docs/getting_started/api-reference/#
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo1: bar
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foo2: baz
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> targetNamespace: pko-test-ns-00-req-apy-dsy-pdy
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The &lt;code>deadMansSnitchUrl&lt;/code> and the &lt;code>pagerDutyKey&lt;/code> come from the &lt;code>configMap&lt;/code>s with the default names in the default
-locations
-documented in
-the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/deadmanssnitch_integration/">addons deadMansSnitch&lt;/a>
-and
-the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/pagerduty_integration/">addons pagerDuty documentation&lt;/a>
-respectively. &lt;em>To have these values inject you must maintain the default naming scheme and location of these configMaps&lt;/em>
-.&lt;/p>
-&lt;p>All the values in &lt;code>.spec.config.addonsv1&lt;/code> can be injected into the objects contained in your packageImage. See the
-&lt;a href="https://package-operator.run/docs/guides/packaging-an-application/#go-templates">package operator documentation&lt;/a> to see
-how to do this.&lt;/p></description></item></channel></rss>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>The &lt;code>deadMansSnitchUrl&lt;/code> and &lt;code>pagerDutyKey&lt;/code> are obtained
+from the ConfigMaps using their default names and locations.
+&lt;strong>IMPORTANT:&lt;/strong> To successfully inject the &lt;code>deadMansSnitchUrl&lt;/code> and &lt;code>pagerDutyKey&lt;/code> values into the &lt;code>ClusterPackage&lt;/code> manifest,
+you must keep the default naming scheme and location of the corresponding ConfigMaps.
+See the &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/deadmanssnitch_integration/">addons deadMansSnitch&lt;/a>
+and &lt;a href="https://mt-sre.github.io/docs/creating-addons/monitoring/pagerduty_integration/">addons pagerDuty&lt;/a>
+documentation for more information.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Additionally, all the values present in &lt;code>.spec.config.addonsv1&lt;/code>
+can be injected into the objects within your packageImage.
+See the
+&lt;a href="https://package-operator.run/docs/guides/packaging-an-application/#go-templates">package operator&lt;/a>
+documentation for more information.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="tenants-onboarding-steps">Tenants Onboarding Steps&lt;/h2>
+&lt;p>Although you can generate the packageImage yourself using the
+&lt;a href="https://package-operator.run/docs/guides/packaging-an-application/#build--validate">package operator&lt;/a> documentation,
+we recommend you use the Managed Tenants Bundles (MTB) facilities.&lt;/p>
+&lt;p>The following steps are an example of generating the packageImage for the reference-addon package using the MTB flow:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>In the MTB repository, create a &lt;code>package&lt;/code> directory and add the &lt;code>manifests.yaml&lt;/code> inside the &lt;code>package&lt;/code> directory.
+See the following
+&lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon/package">merge request&lt;/a>
+for an example.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The MTB CI creates the packageImage and the Operator Lifecycle Manager (OLM) Index Image as part of the team&amp;rsquo;s
+&lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants-bundles/-/tree/main/addons/reference-addon">addon folder&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The MTB CI creates a merge request to the
+&lt;a href="https://gitlab.cee.redhat.com/service/managed-tenants/-/blob/main/addons/reference-addon/addonimagesets/stage/reference-addon.v0.10.1.yaml#L24">managed-tenants repository&lt;/a>
+and adds a new AddonImageSet with the PackageImage and OLM Index images.&lt;/p>
+&lt;/li>
+&lt;/ol></description></item></channel></rss>
