@@ -3,11 +3,6 @@ title: Incident Management
 linkTitle: Incident Management
 ---
 
-An incident refers to an event that can happen at any given time and
- may cause a decrease in the quality or complete outage of one or
- more of our services. Internal or external customers, our monitoring
- and alerting systems, or a member of the SRE team can raise an incident.
-
 Preparedness for major incidents is crucial. We have established the
  following Incident Management processes to ensure SREs can follow predetermined procedures:
 
@@ -19,8 +14,9 @@ Preparedness for major incidents is crucial. We have established the
 
 ## Coverage
 
-Layered Products SRE (LPSRE) provides 24x7 coverage and support
-with primary and secondary on-call SREs responsible for handling production-related issues.
+Layered Products SRE (LPSRE) provides 24x7 coverage and support.
 
 If you need to escalate an incident, please refer to the
  [Layered Products SRE Escalation Procedure](https://source.redhat.com/groups/public/sre/wiki/cs_sre_escalation_procedure).
+
+**NOTE:** Only escalate an incident if the standard manual notification process using an OHSS ticket has failed.
